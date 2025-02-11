@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  transition: all 0.3s ease;
+}
+
+body {
+  background: #F7F4F0;
+  font-family: 'Nunito Sans';
+}
+
+.slick-track {
+  /* display: flex !important; */
+  align-items: center;
+}
+
+.home-header-text a {
+  color: #F8D869;
+}
+
+.home-header-text a:hover {
+  opacity: 0.7;
+}
+
+.poppins {
+  font-family: 'Poppins';
+}
+
+.align-left-center {
+  text-align-last: center;
+}
+
+header {
+  width: 200px;
+  font-family: 'Poppins';
+}
+
+h2 {
+  font-family: 'Poppins';
+}
+
+@media screen and (min-width: 768px) {
+.rounded-t-extra {
+    border-top-left-radius: 5rem;
+    border-top-right-radius: 5rem;
+    
+  }
+}
+
+.top-curve-border {
+  box-shadow: inset 0 0 0 2px  black;
+  margin-left: -2px;
+  margin-bottom: -2px;
+  margin-right: -2px;
+}
+
+.member-gradient{
+  background: linear-gradient(90deg, #ADDAB8 13.12%, #8ECBEF 91.14%);
+}
+
+h2.member-gradient{
+  background: linear-gradient(90deg, #ADDAB8 13.12%, #8ECBEF 91.14%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;  
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.knowledge-gradient{
+  background: linear-gradient(95deg, #FFB57F 7.37%, #F3ACB7 90.46%);
+}
+
+h2.knowledge-gradient{
+  background: linear-gradient(95deg, #FFB57F 7.37%, #F3ACB7 90.46%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;  
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.content-section{
+  margin-left: 200px;
+  width: 100%;
+}
+
+.list-purple{
+  background: #D09FC9;
+}
+
+.profile-picture{
+  width: 75px;
+height: 75px;
+flex-shrink: 0;
+border-radius: 50%;
+object-fit: cover;
+}
+
+.bg-yellow{
+  background: #F8D869;
+}
+
+.bg-purple {
+  background: #D09FC9;
+}
+
+.bg-green {
+  background: #ADDAB8;
+}
+
+
+.profile-icon{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sixty-color-0 {
+  background: #F3ACB7;
+}
+
+.sixty-color-1 {
+  background: #D09FC9;
+}
+
+.sixty-color-2 {
+  background: #ADDAB8;
+}
+
+.sixty-color-3 {
+  background: #FFB57F;
+}
+
+.sixty-color-4 {
+  background: #8ECBEF;
+}
+
+.sixty-color-5 {
+  background: #F8D869;
+}
+
+.sixty-color-6 {
+  background: #f37e80;
+}
+
+form, .font-fira{
+  font-family: 'Fira Code', monospace;
+}
+
+form input {
+  font-family: 'Nunito Sans';
+}
+
+.cookieNotAllow{
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.cookieAllow {
+  opacity: 1;
+  cursor: hand;
+  pointer-events: all;
+}
+
+h1 a{
+  text-decoration: underline;
+}
+.accordion_item.active .button {
+  background-color: #105057;
+}
+.answer_wrapper {
+  height: 0;
+  overflow: hidden;
+}
+.answer_wrapper.open {
+  height: auto;
+}
+
+.slick-dots li {
+  margin: 0 !important;
+}
+
+.slick-dots li button:before {
+  font-size: 10px !important;
+}
+
+.polygon {
+  visibility: hidden;
+
+}
+
+
+.active .polygon {
+  visibility: visible;
+}
