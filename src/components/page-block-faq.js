@@ -1,5 +1,7 @@
-import React, { useState } from "react"
-// import { StaticImage } from "gatsby-plugin-image"
+"use client"
+import { useState } from "react";
+import Image from "next/image";
+
 
 
 const PageBlockFaq = ({ data }) => {
@@ -30,7 +32,7 @@ const PageBlockFaq = ({ data }) => {
           </div>
           <div className="text-center">
           <button className="w-5 pt-5 text-center" onClick={() => handleToggle(index)}>
-          {(clicked === index) ? <StaticImage alt="" className="w-4 h-4" objectFit="contain" src="../images/up-arrow.svg" />: <StaticImage alt="" className="w-4 h-4" objectFit="contain" src="../images/down-arrow.svg" />}
+          {(clicked === index) ? <Image alt="" width={50} height={50} className="w-4 h-4" objectFit="contain" src="../images/up-arrow.svg" />: <Image alt="" width={50} height={50} className="w-4 h-4" objectFit="contain" src="../images/down-arrow.svg" />}
   
           </button>
   

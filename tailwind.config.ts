@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
+import typography from "@tailwindcss/typography"
 
 export default {
   content: [
@@ -10,10 +12,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        neutral: colors.neutral,
+        primary: colors.sky,
+        black: "#1B1B1B",
+      },
+      lineHeight: {
+        'extra-tight': '0.8'
+      }
+    },
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1rem",
+        xs: "1rem",
+        sm: "2rem",
+        xl: "5rem",
+        "2xl": "6rem",
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 } satisfies Config;

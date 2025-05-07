@@ -1,12 +1,12 @@
 "use client"
 
-import React from "react"
-import Slider from "react-slick"
-import Link from 'next/link'
+import React from "react";
+import Slider from "react-slick";
+import Link from 'next/link';
 
 const TestimonialSlider = ({ testimonials }) => {
   function PreviousArrow(props) {
-    const { className, style, onClick } = props
+    const { onClick } = props
     return (
       <div
         className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 -left-10 md:-left-20 flex items-center justify-center"
@@ -16,7 +16,7 @@ const TestimonialSlider = ({ testimonials }) => {
   }
 
   function NextArrow(props) {
-    const { className, style, onClick } = props
+    const { onClick } = props
     return (
       <div
         className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 -right-10 md:-right-20 flex items-center justify-center"

@@ -1,8 +1,8 @@
 "use client"
 
-import Link from "next/link"
-import React, {useState, useEffect} from "react"
-import Image from "next/image"
+import Link from "next/link";
+import React, {useState, useEffect} from "react";
+import Image from "next/image";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 // import {
 //   faBars,
@@ -10,7 +10,7 @@ import Image from "next/image"
 
 
 
-const MobileNav = ({ sidebarText }) => {
+const MobileNav = ({}) => {
   const [open, setOpen] = useState(false)
   useEffect(() => {
     if (open) {
@@ -82,12 +82,11 @@ const MobileNav = ({ sidebarText }) => {
           <p className="text-md lg:text-2xl pb-2">
           Paid opportunities, grants, residencies, and more sent to your inbox.
           </p>
-          <a href="/sign-up">
-          <button className="rounded-full text-black text-lg lg:text-xl px-2 py-2 lg:py-4 mt-5 border-2 border-black w-full hover:bg-black hover:text-[#F7F4F0]">
-            Sign Me Up
-          </button>
-
-          </a>
+          <Link href="/sign-up">
+            <button className="rounded-full text-black text-lg lg:text-xl px-2 py-2 lg:py-4 mt-5 border-2 border-black w-full hover:bg-black hover:text-[#F7F4F0]">
+              Sign Me Up
+            </button>
+          </Link>
         </div>
         <div className="flex flex-col items-baseline justify-end w-full text-black p-5 border-y-2 border-black">
           <Link

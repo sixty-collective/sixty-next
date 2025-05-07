@@ -1,24 +1,26 @@
-import React from "react"
-// import { useStaticQuery, graphql } from "gatsby"
+import { useEffect, useState } from "react"
+import Script from 'next/script'
 
 const PageBlockEmbed = ({ data }) => {
-  const { allStrapiTestimonial } = useStaticQuery(graphql`
-    query {
-      allStrapiTestimonial {
-        edges {
-          node {
-            id
-            name
-            body
-          }
-        }
+  const [testimonials, setTestimonials] = useState([])
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const fetchedTestimonials = await getTestimonials();
+        setTestimonials(fetchedTestimonials.testimonials);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     }
-  `)
+    fetchTestimonials();
+    }, [data])
 
   switch (data.embed) {
     case "donorbox":
-      return <div><script src="https://donorbox.org/widget.js" paypalExpress="true"></script>
+      return <div><Script src="https://donorbox.org/widget.js" paypalExpress="true"></Script>
       <iframe src="https://donorbox.org/embed/support-sixty-s-future-fund?language=en" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%">
 
       </iframe>
@@ -26,10 +28,10 @@ const PageBlockEmbed = ({ data }) => {
     case "testimonialList":
       return (
         <div className="py-8 lg:py-0">
-          {allStrapiTestimonial.edges.map((testimonial, index) => {
+          {testimonials.map((testimonial, index) => {
             function testimonyName() {
-              if (testimonial.node.name.length > 1) {
-                return <div className="pt-5 font-medium">{testimonial.node.name}</div>
+              if (testimonial.name.length > 1) {
+                return <div className="pt-5 font-medium">{testimonial.name}</div>
               }
             }
 
@@ -38,7 +40,7 @@ const PageBlockEmbed = ({ data }) => {
                 className="border-black border-2 rounded-3xl bg-white p-5 mb-10 font-fira"
                 key={index}
               >
-                <div>{testimonial.node.body}</div>
+                <div>{testimonial.body}</div>
                 {testimonyName()}
               </div>
             )
@@ -55,7 +57,7 @@ const PageBlockEmbed = ({ data }) => {
             action="https://formspree.io/f/xbjnylqj"
             method="post"
             className="pb-10"
-            netlify
+            netlify="true"
           >
             <fieldset id="fs-frm-inputs" className="flex flex-col p-10">
             <h2 className="font-semibold text-lg">Share Your Testimonial</h2>
@@ -112,13 +114,13 @@ const PageBlockEmbed = ({ data }) => {
               />
               <div className="mt-5">
                 <input type="checkbox" id="anonymous" name="anonymous" />
-                <label for="anonymous" className="ml-5">
+                <label htmlFor="anonymous" className="ml-5">
                   Keep me anonymous
                 </label>
               </div>
               <div className="mt-5">
                 <input type="checkbox" id="allow" name="allow" />
-                <label for="allow" className="ml-5">
+                <label htmlFor="allow" className="ml-5">
                   I allow Sixty to use this testimonial for promotional purposes. Sixty may lightly edit this submission for clarity and length.
                 </label>
               </div>
@@ -149,7 +151,7 @@ const PageBlockEmbed = ({ data }) => {
             action="https://formspree.io/f/xrbzvdew"
             method="post"
             className="pb-10"
-            netlify
+            netlify="true"
           >
             <fieldset id="fs-frm-inputs" className="flex flex-col p-10">
               <label htmlFor="name" className="mb-2">
@@ -206,3 +208,15 @@ const PageBlockEmbed = ({ data }) => {
 }
 
 export default PageBlockEmbed
+
+async function getTestimonials() {
+  // Fetch data from a hypothetical CMS API endpoint
+  const testimonialsUrl = `https://sixty-backend-new.onrender.com/api/testimonials`
+  const testimonialsRes = await fetch(testimonialsUrl);
+  let testimonials = await testimonialsRes.json();
+  testimonials = testimonials.data
+  // Return the fetched data as props
+  return {
+    testimonials
+  };
+}

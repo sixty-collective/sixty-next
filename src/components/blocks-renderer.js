@@ -6,15 +6,14 @@ import PageBlockText from "./page-block-text"
 import PageBlockFaq from "./page-block-faq"
 
 const componentsMap = {
-  STRAPI__COMPONENT_PAGE_EMBED: PageBlockEmbed,
-  STRAPI__COMPONENT_PAGE_IMAGE: PageBlockImage,
-  STRAPI__COMPONENT_PAGE_TEXT: PageBlockText,
-  STRAPI__COMPONENT_PAGE_FAQ: PageBlockFaq,
+  "page.embed": PageBlockEmbed,
+  "page.image": PageBlockImage,
+  "page.text": PageBlockText,
+  "page.faq": PageBlockFaq,
 }
 
 const Block = ({ block }) => {
-  const Component = componentsMap[block.__typename]
-
+  const Component = componentsMap[block.__component]
   if (!Component) {
     return null
   }
@@ -32,42 +31,42 @@ const BlocksRenderer = ({ blocks }) => {
   )
 }
 
-export const query = graphql`
-  fragment Blocks on STRAPI__COMPONENT_PAGE_EMBEDSTRAPI__COMPONENT_PAGE_FAQSTRAPI__COMPONENT_PAGE_IMAGESTRAPI__COMPONENT_PAGE_TEXTUnion {
-    __typename
-    ... on STRAPI__COMPONENT_PAGE_TEXT {
-      richTextBody: text {
-        __typename
-        data {
-          id
-          childMarkdownRemark {
-            html
-          }
-        }
-      }
-    }
-    ... on STRAPI__COMPONENT_PAGE_IMAGE {
-      image {
-        mime
-        localFile {
-          childImageSharp {
-            gatsbyImageData
-          }
-        }
-      }
-      __typename
-    }
-    ... on STRAPI__COMPONENT_PAGE_EMBED {
-      embed
-    }
-    ... on STRAPI__COMPONENT_PAGE_FAQ {
-      __typename
-      qa {
-        question
-        answer
-      }
-    }
-  }
-`
+// export const query = graphql`
+//   fragment Blocks on STRAPI__COMPONENT_PAGE_EMBEDSTRAPI__COMPONENT_PAGE_FAQSTRAPI__COMPONENT_PAGE_IMAGESTRAPI__COMPONENT_PAGE_TEXTUnion {
+//     __typename
+//     ... on STRAPI__COMPONENT_PAGE_TEXT {
+//       richTextBody: text {
+//         __typename
+//         data {
+//           id
+//           childMarkdownRemark {
+//             html
+//           }
+//         }
+//       }
+//     }
+//     ... on STRAPI__COMPONENT_PAGE_IMAGE {
+//       image {
+//         mime
+//         localFile {
+//           childImageSharp {
+//             gatsbyImageData
+//           }
+//         }
+//       }
+//       __typename
+//     }
+//     ... on STRAPI__COMPONENT_PAGE_EMBED {
+//       embed
+//     }
+//     ... on STRAPI__COMPONENT_PAGE_FAQ {
+//       __typename
+//       qa {
+//         question
+//         answer
+//       }
+//     }
+//   }
+// `
 
 export default BlocksRenderer

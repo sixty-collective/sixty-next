@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import Image from "next/image"
-
+import InfiniteScroll from 'react-infinite-scroll-component';
 // import { useStaticQuery, graphql } from "gatsby"
 // import Layout from "../components/layout"
-import ProfilesGrid from "../../components/profiles-grid"
 // import Seo from "../components/seo"
 import Headings from "@/components/headings"
 // import axios from "axios"
 // import withLocation from "../components/with-location"
+import ProfileCard from "@/components/profile-card"
+
 
 const IndexPage = () => {
     const [global, setGlobal] = useState({})
@@ -36,6 +37,8 @@ const IndexPage = () => {
     const [selectedDescriptors, setSelectedDescriptors] = useState([])
     const [descriptors, setDescriptors] = useState([])
     const [results, setResults] = useState([])
+    const [totalLength, setTotalLength] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
     const [checkedDisciplinesState, setCheckedDisciplinesState] = useState(
       []
     )
@@ -44,7 +47,6 @@ const IndexPage = () => {
     )
     const [openDisciplines, setOpenDisciplines] = React.useState(false)
     const [openDescriptors, setOpenDescriptors] = React.useState(false)
-    const [cookieAllow, setCookieAllow] = React.useState(false)
 
     const toggleDisciplines = () => {
       setOpenDisciplines(!openDisciplines)
@@ -77,11 +79,11 @@ const IndexPage = () => {
       if (resetPage) {
         url =
         "https://sixty-backend-new.onrender.com" +
-        "/api/profiles?pagination[pageSize]=25&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+        "/api/profiles?sort=id&pagination[pageSize]=10&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
       } else {
         url =
         "https://sixty-backend-new.onrender.com" +
-          "/api/profiles?pagination[pageSize]=25&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+          "/api/profiles?sort=id&pagination[pageSize]=10&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
       }
       
       if (selectedDescriptors.length > 0) {
@@ -99,6 +101,10 @@ const IndexPage = () => {
       try {
         await fetch(url).then(async response => {
           const responseJson = await response.json();
+          setTotalLength(responseJson.meta.pagination.total)
+          if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
+            setHasMore(false)
+          }
           if (resetPage) {
             setResults(responseJson.data)
             setPage(() => {
@@ -117,18 +123,11 @@ const IndexPage = () => {
         setIsLoading(false);
       }
     }
-  
-    const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop + 5 < document.documentElement.offsetHeight || isLoading) {
-        return;
-      }
-      // sendSearch();
-    };
-  
-    // if (disciplineSlug && initial) {
-    //   setInitial(false)
-    //   setSelectedDisciplines([{ name: disciplineName, slug: disciplineSlug }])
-    // }
+
+    function fetchData() {
+      console.log("fetch more")
+      sendSearch();
+    }
 
     useEffect(() => {
       async function getData() {
@@ -155,7 +154,8 @@ const IndexPage = () => {
       
         const profilesRes = await fetch(profilesUrl);
         const profiles = await profilesRes.json();
-        setResults(profiles.data)
+        setTotalLength(profiles.meta.pagination.total)
+        // setResults(profiles.data)
         setInitial(false)
       }
       getData();
@@ -188,7 +188,7 @@ const IndexPage = () => {
       setCheckedDescriptorsState(updatedCheckedDescriptorsState)
     }
   
-    const Checkbox = ({ obj, index, check, checked, onChange }) => {
+    const Checkbox = ({ obj, check, checked, onChange }) => {
       return (
         <>
           <input
@@ -792,7 +792,24 @@ const IndexPage = () => {
     }
   
     const profileGrid = (results.length > 0) ? (
-      <ProfilesGrid profiles={results} home={false} />
+      <InfiniteScroll
+          dataLength={results.length} //This is important field to render the next data
+          next={fetchData}
+          hasMore={hasMore}
+          loader={<h4>Loading!...</h4>}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b></b>
+            </p>
+          }
+        >
+              <div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          {results.map((profile, index) => (
+            
+            <ProfileCard profile={profile} key={index} index={index} />
+          ))}
+        </div>
+        </InfiniteScroll>
     ) : (
       <div className="container">
       {isLoading ? (<div className="mt-10 p-10 bg-white rounded-3xl font-fira border-black border-2 shadow-md">
@@ -921,7 +938,7 @@ const IndexPage = () => {
           </div>
         </div>
         <div className="container flex-col justify-start mt-10 px-20">
-          <h2 className="text-xl font-bold">Search Results</h2>
+          <h2 className="text-xl font-bold">Search Results ({totalLength})</h2>
           {profileGrid}
         </div>
       </main>

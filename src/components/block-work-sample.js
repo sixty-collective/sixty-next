@@ -1,8 +1,11 @@
+"use client"
+
 import React from "react"
 import Image from "next/image"
-// import Slider from "react-slick"
-// import "slick-carousel/slick/slick.css"
-// import "slick-carousel/slick/slick-theme.css"
+import Slider from "react-slick"
+import Script from 'next/script'
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 // import { faLink } from "@fortawesome/free-solid-svg-icons"
 // import axios from "axios"
@@ -12,9 +15,9 @@ const BlockWorkSample = ({ data, colorIndex }) => {
 
   function disciplinesSection() {
     if (data.work_sample_disciplines.length > 0) {
-      return data.work_sample_disciplines.map(discipline => {
+      return data.work_sample_disciplines.map((discipline, index) => {
         return (
-          <span className="text-center text-xs mr-2 mb-2 rounded-full px-1 bg-white font-fira border-black border inline-block">
+          <span key={index} className="text-center text-xs mr-2 mb-2 rounded-full px-1 bg-white font-fira border-black border inline-block">
             {discipline.name}
           </span>
         )
@@ -88,12 +91,12 @@ const BlockWorkSample = ({ data, colorIndex }) => {
                 width: "100%",
                 height: "100%",
               }}
-              frameborder="0"
+              frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               allowfullscreen
             ></iframe>
           </div>
-          <script src="https://player.vimeo.com/api/player.js"></script>
+          <Script src="https://player.vimeo.com/api/player.js"></Script>
         </div>
       )
     } else if (!!data.embed && (data.embedLink?.includes("youtube") || data.embedLink?.includes("youtu.be"))) {
@@ -141,8 +144,10 @@ const BlockWorkSample = ({ data, colorIndex }) => {
           {data.images.map(file => (
             <Image
               key={file.id}
-              image={getImage(file.localFile)}
+              src={file.url}
               alt={file.alternativeText}
+              width={500}
+              height={500}
             />
           ))}
         </Slider>

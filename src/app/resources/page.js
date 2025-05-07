@@ -1,18 +1,11 @@
 'use client'; // add this part!
 
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-// import { useStaticQuery, graphql } from "gatsby"
-import Layout from "../../components/layout"
-import ResourceGrid from "../../components/resource-grid"
-// import Seo from "../components/seo"
-import Headings from "@/components/headings"
-import Image from "next/image"
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import ResourceCard from "@/components/resource-card";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-
-
-const ResourcePage = ({ queryStrings }) => {
-  const [global, setGlobal] = useState({})
+const ResourcePage = ({}) => {
   const [initial, setInitial] = useState(true)
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +14,8 @@ const ResourcePage = ({ queryStrings }) => {
   const [selectedResourceTags, setSelectedResourceTags] = useState([])
   const [resourceTags, setResourceTags] = useState([])
   const [results, setResults] = useState([])
+  const [totalLength, setTotalLength] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
   const [checkedCategoriesState, setCheckedCategoriesState] = useState(
     []
   )
@@ -61,10 +56,10 @@ const ResourcePage = ({ queryStrings }) => {
     let url;
     if (resetPage) {
       url =
-      "https://sixty-backend-new.onrender.com/api/resources?pagination[pageSize]=25&pagination[page]="+ 1 + "&populate[0]=categories&populate[1]=resource_tags"
+      "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ 1 + "&populate[0]=categories&populate[1]=resource_tags"
     } else {
       url =
-      "https://sixty-backend-new.onrender.com/api/resources?pagination[pageSize]=25&pagination[page]="+ page + "&populate[0]=categories&populate[1]=resource_tags"
+      "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ page + "&populate[0]=categories&populate[1]=resource_tags"
     }
     
     if (selectedCategories.length > 0) {
@@ -82,6 +77,10 @@ const ResourcePage = ({ queryStrings }) => {
     try {
       await fetch(url).then(async response => {
         const responseJson = await response.json();
+        setTotalLength(responseJson.meta.pagination.total)
+          if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
+            setHasMore(false)
+          }
         if (resetPage) {
           setResults(responseJson.data)
           setPage(() => {
@@ -101,19 +100,11 @@ const ResourcePage = ({ queryStrings }) => {
     }
   }
 
-  const handleScroll = () => {
-    if (window.innerHeight + document.documentElement.scrollTop + 5 < document.documentElement.offsetHeight || isLoading) {
-      return;
-    }
-    sendSearch();
-  };
-
   useEffect(() => {
     async function getData() {
       // Fetch data from a hypothetical CMS API endpoint
       const categoriesUrl = "https://sixty-backend-new.onrender.com/api/categories"
       const resourceTagsUrl = "https://sixty-backend-new.onrender.com/api/resource-tags"
-      const globalUrl = "https://sixty-backend-new.onrender.com/api/global"
       const resourcesUrl = "https://sixty-backend-new.onrender.com/api/resources?populate[0]=categories&populate[1]=resource_tags"
     
     
@@ -127,15 +118,10 @@ const ResourcePage = ({ queryStrings }) => {
       const resourceTagsJSON = await resourceTagsRes.json();
       setResourceTags(resourceTagsJSON.data)
       setCheckedResourceTagsState(new Array(resourceTagsJSON.data.length).fill({status: false, descriptor: ""}))
-
-
-      const globalRes = await fetch(globalUrl);
-      const globalJSON = await globalRes.json();
-      setGlobal(globalJSON)
     
       const resourcesRes = await fetch(resourcesUrl);
       const resourcesJSON = await resourcesRes.json();
-      setResults(resourcesJSON.data)
+      setTotalLength(resourcesJSON.meta.pagination.total)
       setInitial(false)
   
     }
@@ -245,7 +231,7 @@ const ResourcePage = ({ queryStrings }) => {
     setCheckedResourceTagsState(newArray)
   }
 
-  const Checkbox = ({ obj, index, check, checked, onChange }) => {
+  const Checkbox = ({ obj, check, checked, onChange }) => {
     return (
       <>
         <input
@@ -377,8 +363,30 @@ const ResourcePage = ({ queryStrings }) => {
       <div></div>
     )
 
+    function fetchData() {
+      console.log("fetch more")
+      sendSearch();
+    }
+
   const resourceGrid = (results.length > 0) ? (
-    <ResourceGrid resources={results} />
+    <InfiniteScroll
+      dataLength={results.length} //This is important field to render the next data
+      next={fetchData}
+      hasMore={hasMore}
+      loader={<h4>Loading!...</h4>}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b></b>
+        </p>
+      }
+    >
+          <div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+      {results.map((resource, index) => (
+        
+        <ResourceCard resource={resource} key={index} index={index} />
+      ))}
+    </div>
+    </InfiniteScroll>
   ) : (
     <div className="container">
     {isLoading ? (<div className="mt-10 p-10 bg-white rounded-3xl font-fira border-black border-2 shadow-md">
@@ -453,9 +461,9 @@ const ResourcePage = ({ queryStrings }) => {
           </div>
         </div>
         <div className="container flex-col justify-start mt-10 px-20">
-          <h2 className="text-xl font-bold">Search Results</h2>
+        <h2 className="text-xl font-bold">Search Results ({totalLength})</h2>
         </div>
-        <ResourceGrid resources={results} />
+        {resourceGrid}
       </main>
     </div>
   )

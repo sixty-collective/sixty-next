@@ -1,5 +1,5 @@
-import React from "react"
-import ResourceCard from "./resource-card"
+import React from "react";
+import ResourceCard from "./resource-card";
 
 const ResourceGrid = ({ resources }) => {
   return (

@@ -12,37 +12,37 @@ const ProfileCard = ({ profile, index }) => {
     switch (colorIndex) {
       case 0:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Pink.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       case 1:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Purple.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       case 2:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Green.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       case 3:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Orange.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       case 4:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Blue.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       case 5:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Yellow.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
       default:
         return (<Image width={50} height={50} src="/images/Avatar_ProfilePic_Grey.jpg"
-        alt={profile.profilePicture?.alternativeText}
+        alt="default profile picture image"
         className="profile-icon  border-2 border-black">
         </Image>);
   }}
@@ -119,7 +119,7 @@ const ProfileCard = ({ profile, index }) => {
           width={50}
           height={50}
           image={getImage(profile?.profilePicture?.localFile)}
-          alt={profile?.profilePicture?.alternativeText}
+          alt={profile?.profilePicture?.alternativeText || "alt text not provided"}
           className="profile-icon border-2 border-black"
         />
       )
@@ -130,7 +130,7 @@ const ProfileCard = ({ profile, index }) => {
           width={50}
           height={50}
           src={profile?.profilePicture.url}
-          alt={profile?.profilePicture?.alternativeText}
+          alt={profile?.profilePicture?.alternativeText || "alt text not provided"}
           className="profile-icon border-2 border-black"
         />
       )
