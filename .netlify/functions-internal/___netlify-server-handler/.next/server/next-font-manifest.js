@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/alexwen/Projects/sixty-next/src/app/layout":["static/media/93f479601ee12b01-s.p.woff2","static/media/61b81e7bde89ba40-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
