@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 
-const ProfileCard = ({ profile, index }) => {
+const ProfileLine = ({ profile, index }) => {
   if (profile.attributes) {
     profile = profile.attributes
   }
@@ -148,27 +148,12 @@ const ProfileCard = ({ profile, index }) => {
     >
       <div className="">
         <div
-          className={`flex card-header border-b-2 border-black px-5 py-3 justify-left items-center sixty-color-${colorIndex}`}
+          className={`flex card-header border-black px-5 py-3 justify-left items-center sixty-color-${colorIndex}`}
         >
-          <div className="shrink-0">{profilePicture()}</div>
-          <div className="flex flex-col ml-3">
+          <div className="flex flex-row ml-3">
             <div className="flex items-center">
               <h3 className="font-medium poppins text-black mr-2 text-left leading-tight" >{profile.name}</h3>
-              {availability}
             </div>
-            <div className="flex text-xs items-center">
-              <div className="border-2 border-black rounded-full px-1 mr-2 bg-white mt-2">
-                <i className="faLocationDot" />
-                <span className="ml-2">{profile.location}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="">
-          <p className="m-5 line-clamp-4 text-black">{profile.bio}</p>
-          <div className="p-4 border-t-2 border-black max-h-20 relative text-center overflow-hidden">
-            <div className="absolute w-full h-4 bg-white bottom-0"></div>
-            {disciplinesSection()}{descriptorsSection()}
           </div>
         </div>
       </div>
@@ -177,7 +162,7 @@ const ProfileCard = ({ profile, index }) => {
 }
 
 // export const query = graphql`
-//   fragment ProfileCard on STRAPI_PROFILE {
+//   fragment ProfileLine on STRAPI_PROFILE {
 //     id
 //     slug
 //     name
@@ -219,4 +204,4 @@ const ProfileCard = ({ profile, index }) => {
 //   }
 // `
 
-export default ProfileCard
+export default ProfileLine

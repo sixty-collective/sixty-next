@@ -8,15 +8,16 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 // import Layout from "../components/layout"
 // import Seo from "../components/seo"
 import Headings from "@/components/headings"
-// import axios from "axios"
-// import withLocation from "../components/with-location"
+import ProfileLine from "@/components/profile-line"
 import ProfileCard from "@/components/profile-card"
 
 
 const IndexPage = () => {
     const [global, setGlobal] = useState({})
+    const [input, setInput] = useState("")
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isDirectory, setIsDirectory] = useState(false);
     const [initial, setInitial] = useState(true)
     const [visible, setVisible] = useState([
       false,
@@ -38,6 +39,7 @@ const IndexPage = () => {
     const [descriptors, setDescriptors] = useState([])
     const [results, setResults] = useState([])
     const [totalLength, setTotalLength] = useState(0)
+    const [listText, setListText] = useState("List")
     const [hasMore, setHasMore] = useState(true)
     const [checkedDisciplinesState, setCheckedDisciplinesState] = useState(
       []
@@ -72,18 +74,30 @@ const IndexPage = () => {
         return <span className="mr-2"></span>
       }
     }
+
+    const toggleDirectory = async () => {
+      setIsDirectory(!isDirectory)
+      if (isDirectory) {
+        setListText("List")
+      } else {
+        setListText("Grid")
+      }
+
+      sendSearch(true, 100)
+    }
   
-    const sendSearch = async (resetPage) => {
+    const sendSearch = async (resetPage, pageSize) => {
+      let pageSizeNum = pageSize || 10
       setIsLoading(true);
       let url;
       if (resetPage) {
         url =
         "https://sixty-backend-new.onrender.com" +
-        "/api/profiles?sort=id&pagination[pageSize]=10&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+        "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
       } else {
         url =
         "https://sixty-backend-new.onrender.com" +
-          "/api/profiles?sort=id&pagination[pageSize]=10&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+          "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
       }
       
       if (selectedDescriptors.length > 0) {
@@ -96,6 +110,10 @@ const IndexPage = () => {
         selectedDisciplines.forEach((selected, index) => {
           url = url.concat("&filters[$or][" + index + "][disciplines][slug][$in]=" + selected.slug)
         })
+      }
+
+      if (input.length > 0) {
+        url = url.concat("&filters[name][$containsi]=" + input)
       }
 
       try {
@@ -163,12 +181,11 @@ const IndexPage = () => {
   
     useEffect(() => {
       sendSearch(true)
-    }, [selectedDisciplines, selectedDescriptors])
+    }, [selectedDisciplines, selectedDescriptors, input])
   
-    // useEffect(() => {
-    //   window.addEventListener('scroll', handleScroll);
-    //   return () => window.removeEventListener('scroll', handleScroll);
-    // }, [isLoading]);
+    const handleInputChange = e => {
+      setInput(e.target.value)
+    }
   
     const handleDisciplinesChange = (position, discipline) => {
       const updatedCheckedDisciplinesState = checkedDisciplinesState.map(
@@ -796,19 +813,24 @@ const IndexPage = () => {
           dataLength={results.length} //This is important field to render the next data
           next={fetchData}
           hasMore={hasMore}
-          loader={<h4>Loading!...</h4>}
+          loader={<div style={{ textAlign: 'center' }}><h4>Loading...</h4></div>}
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <b></b>
             </p>
           }
         >
-              <div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {results.map((profile, index) => (
-            
+          {
+          isDirectory ? 
+          (<div className="container py-10 grid grid-cols-1 gap-6 grid-cols-2">{
+            results.map((profile, index) => (
+              <ProfileLine profile={profile} key={index} index={index} />
+            ))}</div>) : 
+          (<div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">{
+          results.map((profile, index) => (
             <ProfileCard profile={profile} key={index} index={index} />
-          ))}
-        </div>
+          ))}</div>)
+        }
         </InfiniteScroll>
     ) : (
       <div className="container">
@@ -864,22 +886,29 @@ const IndexPage = () => {
       />
       <main className="flex flex-col justify-center items-center w-full ">
       <div className="flex flex-col w-full border-black border-b-2 items-center bg-[#E1EEF6]">
-        <h2 className="text-5xl min-[400px]:text-6xl sm:text-7xl min-[400px]:leading-extra-tight leading-extra-tight md:text-8xl text-center uppercase font-bold w-full mb-10 px-8 pt-10 member-gradient">
+        <div className="m-10">
+        <h2 className="text-5xl min-[400px]:text-6xl sm:text-7xl min-[400px]:leading-extra-tight leading-extra-tight md:text-8xl text-center uppercase font-bold w-full mb-5 px-8  member-gradient">
               Member Profiles
             </h2>
+            <div className="text-center md:text-center poppins font-normal">Learn about our members, hire talent, find collaborators, and more.</div>
+        </div>
           <div className="flex w-full flex-col items-center justify-center max-w-screen-xl margin-auto">
             <div className="lg:px-20 w-full">
             <div className="flex flex-col border-black px-8 lg:px-32 py-8 mx-10 rounded-t-3xl rounded-t-extra member-gradient top-curve-border">
             <div className="flex flex-col md:flex-row justify-center w-full">
-              <div className="mr-0 font-bold md:mr-5 w-full md:w-1/2 md:block">
-                <div className="text-center md:text-left poppins font-normal">Learn about our members, hire talent, find collaborators, and more.</div>
-                {/* <input
+              <div className="mr-0 md:mr-5 w-full md:w-1/2 md:block">
+                <div className="ml-0 mt-10 md:mt-0 md:ml-0 w-full flex items-center flex-col md:w-1/2 md:items-start">
+                <div className="hidden text-xs md:block">
+                  Search by Name:
+                </div>
+                </div>
+                <input
                   className=" rounded-full px-3 text-sm border-2 border-black mt-2 p-1 w-64"
                   placeholder="Enter 'Name'"
                   value={input}
                   onChange={handleInputChange}
                 />
-                <button onClick={handleSearchPress} className="ml-2 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2">
+                {/* <button onClick={handleSearchPress} className="ml-2 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2">
                   Search
                 </button> */}
               </div>
@@ -938,7 +967,19 @@ const IndexPage = () => {
           </div>
         </div>
         <div className="container flex-col justify-start mt-10 px-20">
-          <h2 className="text-xl font-bold">Search Results ({totalLength})</h2>
+          <div className="flex justify-between">
+          <div className="text-xl font-bold">Search Results ({totalLength})</div>
+          <button
+            className={
+              "mr-2 rounded-full px-3 text-sm p-1 border-black border-2 inline-flex items-center " +
+              (openDescriptors || selectedDescriptors.length > 0
+                ? "bg-black text-white"
+                : "bg-white text-black")
+            }
+            onClick={toggleDirectory} 
+          >{listText} View</button>
+
+          </div>
           {profileGrid}
         </div>
       </main>
