@@ -12,7 +12,6 @@ const PageBlockEmbed = ({ data }) => {
       } catch (err) {
         setError(err);
       } finally {
-        setLoading(false);
       }
     }
     fetchTestimonials();
@@ -21,7 +20,7 @@ const PageBlockEmbed = ({ data }) => {
   switch (data.embed) {
     case "donorbox":
       return <div><Script src="https://donorbox.org/widget.js" paypalExpress="true"></Script>
-      <iframe src="https://donorbox.org/embed/support-sixty-s-future-fund?language=en" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%">
+      <iframe src="https://donorbox.org/embed/support-sixty-s-future-fund?language=en" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameBorder="0" scrolling="no" height="900px" width="100%">
 
       </iframe>
       </div>

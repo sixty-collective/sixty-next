@@ -111,13 +111,13 @@ const ResourcePage = ({}) => {
       const categoriesRes = await fetch(categoriesUrl);
       const categoriesJSON = await categoriesRes.json();
       setCategories(categoriesJSON.data)
-      setCheckedCategoriesState(new Array(categoriesJSON.data.length).fill({status: false, discipline: ""}))
+      setCheckedCategoriesState(new Array(categoriesJSON.data.length).fill({status: false, category: ""}))
 
     
       const resourceTagsRes = await fetch(resourceTagsUrl);
       const resourceTagsJSON = await resourceTagsRes.json();
       setResourceTags(resourceTagsJSON.data)
-      setCheckedResourceTagsState(new Array(resourceTagsJSON.data.length).fill({status: false, descriptor: ""}))
+      setCheckedResourceTagsState(new Array(resourceTagsJSON.data.length).fill({status: false, tag: ""}))
     
       const resourcesRes = await fetch(resourcesUrl);
       const resourcesJSON = await resourcesRes.json();
@@ -208,12 +208,15 @@ const ResourcePage = ({}) => {
         return category !== clearCategory 
     }));
     let newArray = checkedCategoriesState.map(function(category) { 
+      console.log(category)
+      console.log(clearCategory)
       if (category.category.slug !== clearCategory.slug) {
         return category
       } else {
         return {status: false, category: category.category}
       }
     })
+
     setCheckedCategoriesState(newArray)
   }
 

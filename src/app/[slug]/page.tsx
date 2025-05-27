@@ -34,7 +34,8 @@ const Page = (props: { params: Promise<{ slug: string }> }) => {
   function coverImageSection() {
     if (page.coverImage.ext === ".gif") {
       return (
-        <Image src={page.coverImage.url} alt={page.coverImage.alternativeText} className="max-h-56 w-full border-black border-b-2 object-cover" />
+        <Image width={50}
+          height={50} src={page.coverImage.url} alt={page.coverImage.alternativeText} className="max-h-56 w-full border-black border-b-2 object-cover" />
       )
     } else if (page.coverImage) {
       return (

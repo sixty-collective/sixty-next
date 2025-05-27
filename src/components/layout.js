@@ -63,44 +63,46 @@ const Layout = ({ children }) => {
 
   const agreementsPopup = () => {
     if (!cookies.acceptAgreements) {
-      return (
-        <div className="absolute w-full h-full top-0 left-0 bg-gray-400/75 overflow-hidden z-50">
-          <div className="ml-5 mr-5 w-auto md:w-1/2 md:m-auto bg-white mt-20 md:mt-20 flex flex-col bg-white rounded-2xl">
-            <h2 className="text-md md:text-xl font-medium bg-green text-black text-center w-full p-4 border-2 border-black rounded-t-2xl">
-              Community Agreements
-            </h2>
-            <div className="pt-2 pb-0 pl-5 pr-5 border-l-2 border-r-2 border-b-2 border-black rounded-b-2xl">
-              <ul>
-              {Array(5)
-                .fill(0)
-                .map((_, index) => (
-                  <li className="list-none flex items-center" key={index}>
-                    <input
-                      type="checkbox"
-                      checked={checkboxStatus[index]}
-                      onChange={() => buttonHandler(index)}
-                    />
-                    <span className="text-xs md:text-base m-2 md:ml-5 md:mt-5 md:mb-5">{agreements[index]}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-xs md:text-base pt-5">
-                This website uses cookies to keep track of whether the Community
-                Agreements has been accepted.
-              </p>
-              <div className="flex items-center justify-center p-10">
-                <button
-                  disabled={!cookieAllow}
-                  onClick={acceptAgreements}
-                  className="rounded-full px-3 text-sm bg-black disabled:opacity-50 text-white p-1 border-black border-2"
-                >
-                  Agree & Enter
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
+    //   return (
+    //     <div className="absolute w-full h-full top-0 left-0 bg-gray-400/75 overflow-hidden z-50">
+    //       <div className="ml-5 mr-5 w-auto md:w-1/2 md:m-auto bg-white mt-20 md:mt-20 flex flex-col bg-white rounded-2xl">
+    //         <h2 className="text-md md:text-xl font-medium bg-green text-black text-center w-full p-4 border-2 border-black rounded-t-2xl">
+    //           Community Agreements
+    //         </h2>
+    //         <div className="pt-2 pb-0 pl-5 pr-5 border-l-2 border-r-2 border-b-2 border-black rounded-b-2xl">
+    //           <ul>
+    //           {Array(5)
+    //             .fill(0)
+    //             .map((_, index) => (
+    //               <li className="list-none flex items-center" key={index}>
+    //                 <input
+    //                   type="checkbox"
+    //                   checked={checkboxStatus[index]}
+    //                   onChange={() => buttonHandler(index)}
+    //                 />
+    //                 <span className="text-xs md:text-base m-2 md:ml-5 md:mt-5 md:mb-5">{agreements[index]}</span>
+    //               </li>
+    //             ))}
+    //           </ul>
+    //           <p className="text-xs md:text-base pt-5">
+    //             This website uses cookies to keep track of whether the Community
+    //             Agreements has been accepted.
+    //           </p>
+    //           <div className="flex items-center justify-center p-10">
+    //             <button
+    //               disabled={!cookieAllow}
+    //               onClick={acceptAgreements}
+    //               className="rounded-full px-3 text-sm bg-black disabled:opacity-50 text-white p-1 border-black border-2"
+    //             >
+    //               Agree & Enter
+    //             </button>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   )
+    // } else {
+      return (<div></div>)
     }
   }
 

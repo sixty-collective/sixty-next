@@ -247,7 +247,7 @@ const IndexPage = () => {
           return discipline !== clearDiscipline 
       }));
       let newArray = checkedDisciplinesState.map(function(discipline) { 
-        if (discipline.slug !== clearDiscipline.slug) {
+        if (discipline.discipline.slug !== clearDiscipline.slug) {
           return discipline
         } else {
           return {status: false, discipline: discipline}
@@ -971,10 +971,7 @@ const IndexPage = () => {
           <div className="text-xl font-bold">Search Results ({totalLength})</div>
           <button
             className={
-              "mr-2 rounded-full px-3 text-sm p-1 border-black border-2 inline-flex items-center " +
-              (openDescriptors || selectedDescriptors.length > 0
-                ? "bg-black text-white"
-                : "bg-white text-black")
+              "mr-2 rounded-full px-3 text-sm p-1 border-black border-2 inline-flex items-center "
             }
             onClick={toggleDirectory} 
           >{listText} View</button>
