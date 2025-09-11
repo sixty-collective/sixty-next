@@ -121,7 +121,11 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
     if (profile.website?.length > 1) {
       return (
         <a target="_blank" rel="noreferrer" className="hover:opacity-50 px-2 text-2xl" href={profile.website}>
-          <i className="faGlobe" />
+          <Image width={50} height={50}
+            alt=""
+            className="w-6"
+            src="/images/globe.svg"
+          />
         </a>
       )
     }
@@ -131,7 +135,11 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
     if (profile.secondaryWebsite) {
       return (
         <a target="_blank" rel="noreferrer" className="hover:opacity-50 px-2 text-2xl" href={profile.secondaryWebsite}>
-          <i className="faDesktop" />
+          <Image width={50} height={50}
+            alt=""
+            className="w-6"
+            src="/images/globe2.svg"
+          />
         </a>
       )
     }
@@ -468,8 +476,12 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 {profile.pronouns}
               </div>
               <div className="mt-2 text-sm text-neutral-700 rounded-full bg-white border-2 border-black px-2 flex items-center">
-                <i className="faLocationDot" />
-                <span className="ml-2">{profile.location}</span>
+                <Image width={10} height={10}
+                  alt=""
+                  className="w-3"
+                  src="/images/location.svg"
+                />
+                <span className="ml-1">{profile.location}</span>
               </div>
               <div className="mt-2 text-sm text-neutral-700 rounded-full bg-white border-2 border-black px-2 flex items-center">
                 {availabilityColor}

@@ -127,31 +127,60 @@ const BlockWorkSample = ({ data, colorIndex }) => {
           </div>
       )
     } else if (data.images) {
-      return (
-        <Slider
-          dots={true}
-          infinite={true}
-          speed={300}
-          slidesToShow={1}
-          slidesToScroll={1}
-          arrows={true}
-          fade={true}
-          swipe={true}
-          adaptiveHeight={true}
-          nextArrow={<NextArrow />}
-          prevArrow={<PreviousArrow />}
-        >
-          {data.images.map(file => (
-            <Image
-              key={file.id}
-              src={file.url}
-              alt={file.alternativeText}
-              width={500}
-              height={500}
-            />
-          ))}
-        </Slider>
-      )
+      if (data.images.length == 1) {
+        return (
+          <Slider
+            dots={false}
+            infinite={true}
+            speed={300}
+            slidesToShow={1}
+            slidesToScroll={1}
+            arrows={false}
+            fade={true}
+            swipe={false}
+            adaptiveHeight={true}
+            nextArrow={<NextArrow />}
+            prevArrow={<PreviousArrow />}
+          >
+            {data.images.map(file => (
+              <Image
+                key={file.id}
+                src={file.url}
+                alt={file.alternativeText}
+                width={500}
+                height={500}
+                className="max-h-[800px]"
+              />
+            ))}
+          </Slider>
+        )
+      } else {
+        return (
+          <Slider
+            dots={true}
+            infinite={true}
+            speed={300}
+            slidesToShow={1}
+            slidesToScroll={1}
+            arrows={true}
+            fade={true}
+            swipe={true}
+            adaptiveHeight={true}
+            nextArrow={<NextArrow />}
+            prevArrow={<PreviousArrow />}
+          >
+            {data.images.map(file => (
+              <Image
+                key={file.id}
+                src={file.url}
+                alt={file.alternativeText}
+                width={500}
+                height={500}
+              />
+            ))}
+          </Slider>
+        )
+      }
     } else {
       <div></div>
     }

@@ -117,9 +117,9 @@ const Navbar = ({ sidebarText }) => {
             <a
               target="_blank" rel="noreferrer"
               className="text-xl font-bold  ml-3"
-              href="http://www.x.com/fromthecenter"
+              href="https://sixtyinchesfromcenter.org/"
             >
-              <Image alt="" width={50} height={50} className="w-6 h-6" src="../images/x-twitter-black.svg" />
+              <Image alt="" width={45} height={45} className="w-6 h-6" src="../images/globe.svg" />
               </a>
         </div>
         <div className="p-4 flex justify-center items-center w-full border-b-2 border-black">

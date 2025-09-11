@@ -157,9 +157,13 @@ const ProfileCard = ({ profile, index }) => {
               {availability}
             </div>
             <div className="flex text-xs items-center">
-              <div className="border-2 border-black rounded-full px-1 mr-2 bg-white mt-2">
-                <i className="faLocationDot" />
-                <span className="ml-2">{profile.location}</span>
+              <div className="border-2 border-black rounded-full px-1 mr-2 bg-white mt-2 flex">
+                <Image width={10} height={10}
+                  alt=""
+                  className="w-3"
+                  src="/images/location.svg"
+                />
+                <span className="ml-1">{profile.location}</span>
               </div>
             </div>
           </div>
