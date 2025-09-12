@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from "react"
 import Image from "next/image"
 
-const Navbar = ({ sidebarText }) => {
+const Navbar = () => {
   return (
     <header className="hidden md:block relative w-full md:fixed text-black md:w-52 md:h-full shadow-2xl border-r-2 border-black">
       <Script src="https://cdn.userway.org/widget.js" data-account="FDvSmHKPEz" />
@@ -123,7 +123,7 @@ const Navbar = ({ sidebarText }) => {
               </a>
         </div>
         <div className="p-4 flex justify-center items-center w-full border-b-2 border-black">
-          {sidebarText}
+          Sixty Collective is a network of artists, writers, and arts workers based in the Midwest.
         </div>
       </nav>
     </header>

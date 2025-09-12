@@ -67,9 +67,9 @@ const BlockWorkSample = ({ data, colorIndex }) => {
     if (data.link) {
       return (
       <a target="_blank" rel="noreferrer" className="flex justify-left" href={data.link}>
-        <button className={`rounded-full sixty-color-${colorIndex} hover:opacity-70 px-2 py-1 flex items-center line-clamp-1`}>
+        <button className={`rounded-full sixty-color-${colorIndex} hover:opacity-70 px-2 py-1 flex items-center`}>
           <i className="faLink" />{" "}
-          <span className="ml-2 line-clamp-1 underline">{data.link}</span>
+          <span className="ml-2 line-clamp-1 underline text-left">{data.link}</span>
         </button>
       </a>
       )
@@ -142,18 +142,31 @@ const BlockWorkSample = ({ data, colorIndex }) => {
             nextArrow={<NextArrow />}
             prevArrow={<PreviousArrow />}
           >
-            {data.images.map(file => (
-              <Image
-                key={file.id}
-                src={file.url}
-                alt={file.alternativeText}
-                width={500}
-                height={500}
-                className="max-h-[800px]"
-              />
-            ))}
+            {data.images.map(file => {
+              if (file.ext == ".pdf") {
+                return (
+                  <embed
+                  className="h-[500px]"
+                  key={file.id}
+                  type='application/pdf'
+                  src={file.url}
+                  />
+                )
+              } else {
+                return (
+                  <Image
+                    key={file.id}
+                    src={file.url}
+                    alt={file.alternativeText}
+                    width={500}
+                    height={500}
+                    className="max-h-[600px] object-contain"
+                  />
+                )
+              }
+            })}
           </Slider>
-        )
+          )
       } else {
         return (
           <Slider
@@ -169,15 +182,29 @@ const BlockWorkSample = ({ data, colorIndex }) => {
             nextArrow={<NextArrow />}
             prevArrow={<PreviousArrow />}
           >
-            {data.images.map(file => (
-              <Image
-                key={file.id}
-                src={file.url}
-                alt={file.alternativeText}
-                width={500}
-                height={500}
-              />
-            ))}
+            {data.images.map(file => {
+              if (file.ext == ".pdf") {
+                return (
+                  <embed
+                  className="h-[500px]"
+                  key={file.id}
+                  type='application/pdf'
+                  src={file.url}
+                  />
+                )
+              } else {
+                return (
+                  <Image
+                    key={file.id}
+                    src={file.url}
+                    alt={file.alternativeText}
+                    width={500}
+                    height={500}
+                    className="max-h-[600px] object-contain"
+                  />
+                )
+              }
+            })}
           </Slider>
         )
       }
