@@ -107,7 +107,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex-col-reverse md:flex-col flex min-h-screen justify-end md:justify-start text-neutral-900">
-      <Navbar sidebarText={global.sidebarText} />
+      <Navbar />
       <div className="ml-0 md:ml-52">
         {children}
         <Footer />

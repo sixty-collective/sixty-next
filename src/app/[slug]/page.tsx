@@ -42,8 +42,8 @@ const Page = (props: { params: Promise<{ slug: string }> }) => {
         <Image
           src={page.coverImage.url}
           alt={page.coverImage.alternativeText}
-          width={50}
-          height={50}
+          width={500}
+          height={500}
           className="max-h-56 w-full border-black border-b-2"
         />
       )

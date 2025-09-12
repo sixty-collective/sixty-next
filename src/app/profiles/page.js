@@ -879,10 +879,9 @@ const IndexPage = () => {
 
   return (
     <div>
-      {/* <Seo seo={{ metaTitle: "Home" }} /> */}
       <Headings
-        title={global.siteName}
-        description={global.siteDescription}
+        title={"Member Profiles"}
+        description={"Learn about our members, hire talent, find collaborators, and more."}
       />
       <main className="flex flex-col justify-center items-center w-full ">
       <div className="flex flex-col w-full border-black border-b-2 items-center bg-[#E1EEF6]">

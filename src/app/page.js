@@ -18,21 +18,19 @@ const  IndexPage = async () => {
 
   return (
     <div>
-      {/* <Seo seo={{ metaTitle: "Home" }} /> */}
       <Headings
-        title={global.siteName}
-        description={global.siteDescription}
+        title={global.data.siteName}
+        description={global.data.siteDescription}
       />
       <div className="flex flex-col justify-center items-center width-full">
         <Image unoptimized className="w-full max-h-96" src={'/images/Sixty-Collective-Homepage.gif'} alt="An animation of a book opening up to have several tools fly out" width={500} height={500} />
         <div className="w-full">
           <h1 className="text-xl w-full bg-black font-medium text-white text-center p-5 home-header-text poppins">
-            {/* <div
-              dangerouslySetInnerHTML={{
-                __html:
-                  global.homeHeaderText,
-              }}
-            /> */}
+            <div
+        dangerouslySetInnerHTML={{
+          __html: global.data.homeHeaderText,
+        }}
+      />
           </h1>
         </div>
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
@@ -162,7 +160,7 @@ async function getData() {
 
   const globalRes = await fetch(globalUrl);
   const global = await globalRes.json();
-
+  console.log(global)
 
   // Return the fetched data as props
   return {
