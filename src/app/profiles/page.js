@@ -13,7 +13,6 @@ import ProfileCard from "@/components/profile-card"
 
 
 const IndexPage = () => {
-    const [global, setGlobal] = useState({})
     const [input, setInput] = useState("")
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -152,7 +151,6 @@ const IndexPage = () => {
         // Fetch data from a hypothetical CMS API endpoint
         const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category"
         const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category"
-        const globalUrl = "https://sixty-backend-new.onrender.com/api/global"
         const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
   
       
@@ -165,10 +163,6 @@ const IndexPage = () => {
         const descriptorsData = await descriptorsRes.json();
         setDescriptors(descriptorsData.data)
         setCheckedDescriptorsState(new Array(descriptorsData.data.length).fill({status: false, descriptor: ""}))
-      
-        const globalRes = await fetch(globalUrl);
-        const globalJSON = await globalRes.json();
-        setGlobal(globalJSON)
       
         const profilesRes = await fetch(profilesUrl);
         const profiles = await profilesRes.json();

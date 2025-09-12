@@ -15,19 +15,8 @@ const agreements = [
 ]
 
 const Layout = ({ children }) => {
-  const [global, setGlobal] = useState({})
-
   const [checkboxStatus, setCheckboxStatus] = useState(Array(5).fill(false))
   const [cookies, setCookie] = useCookies(['acceptAgreements']);
-  useEffect(() => {
-    async function getData() {
-      const globalUrl = "https://sixty-backend-new.onrender.com/api/global"
-      const globalRes = await fetch(globalUrl);
-      const globalJSON = await globalRes.json();
-      setGlobal(globalJSON)
-    }
-    getData();
-  }, []);
 
   const acceptAgreements = () => {
     setCookie('acceptAgreements', "true");
