@@ -160,7 +160,6 @@ async function getData() {
 
   const globalRes = await fetch(globalUrl);
   const global = await globalRes.json();
-  console.log(global)
 
   // Return the fetched data as props
   return {
