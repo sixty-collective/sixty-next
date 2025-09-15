@@ -207,7 +207,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
               id="fs-frm"
               name="sixty-contact-form"
               acceptCharset="utf-8"
-              action="https://docs.google.com/forms/d/e/1FAIpQLSeQMyVMP65lVv4Kl-HR0GEQRMhBWNWN6JBF7TMxtJE-HkebVg/formResponse"
+              action="https://formspree.io/f/mblrebdn"
               method="post"
               className="pb-10"
             >
@@ -217,25 +217,25 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <input
                   type="text"
-                  name="entry.1742148243"
+                  name="name"
                   id="full-name"
                   required
                   className="bg-gray-200 rounded-lg p-2"
                 />
-                <label htmlFor="email-address" className="mt-10 mb-2">
+                <label htmlFor="email" className="mt-10 mb-2">
                   Your Email*
                 </label>
                 <input
                   type="email"
-                  name="entry.1770514597"
-                  id="email-address"
+                  name="email"
+                  id="email"
                   required
                   className="bg-gray-200 rounded-lg p-2"
                 />
-                <label htmlFor="statement" className="mt-10 mb-2">
+                <label htmlFor="member" className="mt-10 mb-2">
                   Who are you contacting?*
                 </label>
-                <select className="bg-gray-200 rounded-lg p-2" name="entry.1449372613">
+                <select className="bg-gray-200 rounded-lg p-2" name="member">
                   {allProfilesOptions()}
                 </select>
                 <label htmlFor="statement" className="mt-10 mb-2">
@@ -244,7 +244,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <textarea
                   rows={5}
-                  name="entry.1229823576"
+                  name="statement"
                   id="statement"
                   required
                   defaultValue={""}
@@ -257,7 +257,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <textarea
                   rows={5}
-                  name="entry.1264059585"
+                  name="seeking"
                   id="seeking"
                   required
                   defaultValue={""}
@@ -269,7 +269,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <textarea
                   rows={5}
-                  name="entry.604837467"
+                  name="timeframe"
                   id="timeframe"
                   required
                   defaultValue={""}
@@ -282,7 +282,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <textarea
                   rows={5}
-                  name="entry.1001421233"
+                  name="materials"
                   id="materials"
                   required
                   defaultValue={""}
@@ -294,7 +294,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                     <input
                       type="radio"
                       id="0-500"
-                      name="entry.650068855"
+                      name="budget"
                       defaultValue="0-500"
                       className="mr-3 bg-gray-200"
                     />
@@ -304,7 +304,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                     <input
                       type="radio"
                       id="500-1000"
-                      name="entry.650068855"
+                      name="budget"
                       defaultValue="500-1000"
                       className="mr-3 bg-gray-200"
                     />
@@ -314,7 +314,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                     <input
                       type="radio"
                       id="1000-5000"
-                      name="entry.650068855"
+                      name="budget"
                       defaultValue="1000-5000"
                       className="mr-3 bg-gray-200"
                     />
@@ -324,7 +324,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                     <input
                       type="radio"
                       id="5000+"
-                      name="entry.650068855"
+                      name="budget"
                       defaultValue="5000+"
                       className="mr-3 bg-gray-200"
                     />
@@ -337,7 +337,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
                 </label>
                 <textarea
                   rows={5}
-                  name="entry.1279921056"
+                  name="interest"
                   id="interest"
                   required
                   defaultValue={""}
