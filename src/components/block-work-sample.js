@@ -6,9 +6,6 @@ import Slider from "react-slick"
 import Script from 'next/script'
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-// import { faLink } from "@fortawesome/free-solid-svg-icons"
-// import axios from "axios"
 
 const BlockWorkSample = ({ data, colorIndex }) => {
   let soundcloudEmbed = ""
@@ -28,24 +25,23 @@ const BlockWorkSample = ({ data, colorIndex }) => {
   }
 
   function PreviousArrow(props) {
-    const { className, style, onClick } = props
+    const { onClick } = props
     return (
       <div
-        className={className}
-        style={{ ...style, left: "10px", zIndex: "10" }}
+        className="z-10 bg-white border-black border-2 w-8 h-8 font-fira rounded-full text-md font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 left-5 md:left-5 flex items-center justify-center"
         onClick={onClick}
-      />
+      >&lt;</div>
     )
   }
 
   function NextArrow(props) {
-    const { className, style, onClick } = props
+    const { onClick } = props
     return (
       <div
-        className={className}
-        style={{ ...style, right: "10px" }}
+        className="bg-white border-black border-2 w-8 h-8 font-fira rounded-full text-md font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 md:right-5 flex items-center justify-center"
         onClick={onClick}
-      />
+      >&gt;
+      </div>
     )
   }
 
@@ -67,8 +63,12 @@ const BlockWorkSample = ({ data, colorIndex }) => {
     if (data.link) {
       return (
       <a target="_blank" rel="noreferrer" className="flex justify-left" href={data.link}>
-        <button className={`rounded-full sixty-color-${colorIndex} hover:opacity-70 px-2 py-1 flex items-center`}>
-          <i className="faLink" />{" "}
+        <button className={`rounded-full line-clamp-1 sixty-color-${colorIndex} hover:opacity-70 px-2 py-1 flex items-center`}>
+          <Image width={30} height={30}
+            alt=""
+            className="w-4"
+            src="/images/link.svg"
+          />
           <span className="ml-2 line-clamp-1 underline text-left">{data.link}</span>
         </button>
       </a>
@@ -218,7 +218,7 @@ const BlockWorkSample = ({ data, colorIndex }) => {
       <div className="card-header border-b-2 border-black pt-5 pb-3 flex justify-center items-center flex-wrap	">
         {disciplinesSection()}
       </div>
-      {mediaSection()}
+      <div className="bg-black">{mediaSection()}</div>
       <div className="p-10">
         <p className="font-medium poppins pb-4 text-2xl">{data.name}</p>
         <p className="pb-4">{data.description}</p>

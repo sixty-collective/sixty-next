@@ -9,7 +9,7 @@ const TestimonialSlider = ({ testimonials }) => {
     const { onClick } = props
     return (
       <div
-        className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 -left-10 md:-left-20 flex items-center justify-center"
+        className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 left-10 md:left-20 flex items-center justify-center"
         onClick={onClick}
       >&lt;</div>
     )
@@ -19,7 +19,7 @@ const TestimonialSlider = ({ testimonials }) => {
     const { onClick } = props
     return (
       <div
-        className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 -right-10 md:-right-20 flex items-center justify-center"
+        className="bg-white border-black border-2 w-8 h-8 md:w-10 md:h-10 font-fira rounded-full text-md md:text-2xl font-bold cursor-pointer absolute top-1/2 -translate-y-1/2 right-10 md:right-20 flex items-center justify-center"
         onClick={onClick}
       >&gt;
       </div>
@@ -34,14 +34,14 @@ const TestimonialSlider = ({ testimonials }) => {
   }
 
   return (
-  <div className="w-full flex items-center justify-center bg-purple py-10 md:py-20">
+  <div className="w-full flex items-center justify-center bg-purple py-10 md:py-20 relative">
           <div className="w-3/4 md:w-1/2"> 
             <Slider
               dots={false}
               infinite={true}
               lazyLoad={true}
               speed={300}
-              arrows={true}
+              arrows={false}
               swipeToSlide={true}
               slidesToScroll={1}
               centerMode={false}

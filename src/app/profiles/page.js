@@ -149,13 +149,14 @@ const IndexPage = () => {
     useEffect(() => {
       async function getData() {
         // Fetch data from a hypothetical CMS API endpoint
-        const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category"
-        const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category"
+        const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category&pagination[pageSize]=200"
+        const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category&pagination[pageSize]=200"
         const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
   
       
         const disciplinesRes = await fetch(disciplinesUrl);
         const disciplinesData = await disciplinesRes.json();
+        console.log(disciplinesData)
         setDisciplines(disciplinesData.data)
         setCheckedDisciplinesState(new Array(disciplinesData.data.length).fill({status: false, discipline: ""}))
   
@@ -959,7 +960,7 @@ const IndexPage = () => {
             </div>
           </div>
         </div>
-        <div className="container flex-col justify-start mt-10 px-20">
+        <div className="container flex-col justify-start mt-10 lg:px-20">
           <div className="flex justify-between">
           <div className="text-xl font-bold">Search Results ({totalLength})</div>
           <button

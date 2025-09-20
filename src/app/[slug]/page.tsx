@@ -3,6 +3,8 @@
 import { useEffect, useState, use } from "react";
 import Image from "next/image"
 import BlocksRenderer from "@/components/blocks-renderer"
+import Headings from "@/components/headings"
+
 
 const Page = (props: { params: Promise<{ slug: string }> }) => {
   const params = use(props.params);
@@ -73,6 +75,10 @@ const Page = (props: { params: Promise<{ slug: string }> }) => {
     <div>
     {!loading && !error && (
       <div>
+        <Headings
+          title={page.title}
+          description={"Sixty Collective is a network of artists, writers, and arts workers based in the Midwest."}
+        />
         {coverImageSection()}
         <div className="container pt-10 md:pt-20">
           <h1 className="poppins text-4xl font-semibold text-black">{page.title}</h1>
@@ -87,7 +93,6 @@ const Page = (props: { params: Promise<{ slug: string }> }) => {
 export default Page;
 
 async function getPage(slug: string) {
-  // Fetch data from a hypothetical CMS API endpoint
   const pagesUrl = `https://sixty-backend-new.onrender.com/api/pages?filters[slug][$eq]=${slug}&populate[0]=coverImage&populate[1]=blocks&populate[2]=sideBlocks&populate[3]=blocks.qa&populate[4]=sideBlocks.qa`
   const pagesRes = await fetch(pagesUrl);
   let page = await pagesRes.json();

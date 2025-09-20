@@ -19,7 +19,7 @@ const  IndexPage = async () => {
   return (
     <div>
       <Headings
-        title={global.data.siteName}
+        title={"Sixty Collective"}
         description={global.data.siteDescription}
       />
       <div className="flex flex-col justify-center items-center width-full">
