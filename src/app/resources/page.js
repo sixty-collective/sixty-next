@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ResourceCard from "@/components/resource-card";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Headings from "@/components/headings"
+
 
 const ResourcePage = ({}) => {
   const [initial, setInitial] = useState(true)
@@ -402,6 +404,10 @@ const ResourcePage = ({}) => {
 
   return (
     <div>
+      <Headings
+        title={"Knowledge Share"}
+        description={"Browse through our carefully selected articles, tools, career advice, and more."}
+      />
       <main className="flex flex-col justify-center items-center w-full">
       <div className="flex flex-col w-full border-black border-b-2 items-center bg-[#F8E3D3]">
         <h2 className="text-5xl min-[400px]:text-6xl sm:text-7xl min-[400px]:leading-extra-tight leading-extra-tight md:text-8xl text-center uppercase font-bold w-full mb-10 px-8 pt-10 knowledge-gradient">
@@ -463,7 +469,7 @@ const ResourcePage = ({}) => {
             </div>
           </div>
         </div>
-        <div className="container flex-col justify-start mt-10 px-20">
+        <div className="container flex-col justify-start mt-10 lg:px-20">
         <h2 className="text-xl font-bold">Search Results ({totalLength})</h2>
         </div>
         {resourceGrid}

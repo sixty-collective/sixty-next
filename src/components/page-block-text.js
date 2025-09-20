@@ -1,19 +1,26 @@
 "use client"
 import {  useEffect, useState } from "react";
-import { remark } from 'remark';
-import html from 'remark-html';
-
+import {unified} from 'unified'
+import rehypeStringify from 'rehype-stringify'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import rehypeFormat from 'rehype-format'
+import rehypeRaw from 'rehype-raw';
 const PageBlockText = ({ data }) => {
   const [content, setContent] = useState({})
 
   useEffect(() => {
     const fetchData = async () => {
-      const processedContent = await remark()
-        .use(html)
+      const processedContent = await unified()
+        .use(remarkParse)
+        .use(remarkRehype, {"allowDangerousHtml": true})
+        .use(rehypeRaw)
+        .use(rehypeFormat)
+        .use(rehypeStringify)
         .process(data.text);
       setContent(processedContent.toString())
+      console.log(processedContent)
     };
-
     fetchData();
   }, [data]);
 

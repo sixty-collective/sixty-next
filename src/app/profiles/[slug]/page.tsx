@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import BlockWorkSample from "@/components/block-work-sample"
 // import { i class "rom "@fortawesome/react-fontawes"me"
 import Image from "next/image"
-// import scrollTo from 'gatsby-plugin-smoothscroll';
+import Headings from "@/components/headings"
 
 // import {
 //   faDesktop,
@@ -460,6 +460,10 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
     <div>
     {!loading && !error && (
     <div>
+      <Headings
+                  title={profile.name}
+                  description={"Learn about our members, hire talent, find collaborators, and more."}
+                />
       <main className="flex flex-col-reverse mt-8 lg:grid lg:grid-cols-4 lg:gap-3 lg:p-20 container">
         {mainProfileSection()}
         <div className="side-content flex flex-col col-span-1 lg:p-5">
