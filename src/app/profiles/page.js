@@ -3,16 +3,16 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import Image from "next/image"
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import InfiniteScroll from 'react-infinite-scroll-component';
-// import { useStaticQuery, graphql } from "gatsby"
-// import Layout from "../components/layout"
-// import Seo from "../components/seo"
 import Headings from "@/components/headings"
 import ProfileLine from "@/components/profile-line"
 import ProfileCard from "@/components/profile-card"
 
 
-const IndexPage = () => {
+const IndexPage = ({}) => {
+    const searchParams = useSearchParams()
+    const router = useRouter()
     const [input, setInput] = useState("")
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +86,7 @@ const IndexPage = () => {
     }
   
     const sendSearch = async (resetPage, pageSize) => {
+      console.log("sendSearch")
       let pageSizeNum = pageSize || 10
       setIsLoading(true);
       let url;
@@ -96,7 +97,7 @@ const IndexPage = () => {
       } else {
         url =
         "https://sixty-backend-new.onrender.com" +
-          "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+        "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
       }
       
       if (selectedDescriptors.length > 0) {
@@ -118,6 +119,7 @@ const IndexPage = () => {
       try {
         await fetch(url).then(async response => {
           const responseJson = await response.json();
+          console.log(responseJson)
           setTotalLength(responseJson.meta.pagination.total)
           if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
             setHasMore(false)
@@ -148,7 +150,6 @@ const IndexPage = () => {
 
     useEffect(() => {
       async function getData() {
-        // Fetch data from a hypothetical CMS API endpoint
         const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category&pagination[pageSize]=200"
         const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category&pagination[pageSize]=200"
         const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
@@ -156,7 +157,7 @@ const IndexPage = () => {
       
         const disciplinesRes = await fetch(disciplinesUrl);
         const disciplinesData = await disciplinesRes.json();
-        console.log(disciplinesData)
+
         setDisciplines(disciplinesData.data)
         setCheckedDisciplinesState(new Array(disciplinesData.data.length).fill({status: false, discipline: ""}))
   
@@ -168,15 +169,67 @@ const IndexPage = () => {
         const profilesRes = await fetch(profilesUrl);
         const profiles = await profilesRes.json();
         setTotalLength(profiles.meta.pagination.total)
-        // setResults(profiles.data)
+
+        if (searchParams.size > 0) {
+          if (searchParams.get('disciplineSlug') && searchParams.get('disciplineSlug').length > 0) {
+            let selected = [];
+            let slugs = [];
+            let names = [];
+            slugs = searchParams.get('disciplineSlug').split(',')
+            names = searchParams.get('disciplineName').split(',')
+            for (var i = 0; i < slugs.length; i++) {
+               selected.push({ name: names[i], slug: slugs[i]})
+            }
+            setSelectedDisciplines(selected)
+          }
+          if (searchParams.get('descriptorSlug') && searchParams.get('descriptorSlug').length > 0) {
+            let selected = [];
+            let slugs = [];
+            let names = [];
+            slugs = searchParams.get('descriptorSlug').split(',')
+            names = searchParams.get('descriptorName').split(',')
+            for (var i = 0; i < slugs.length; i++) {
+               selected.push({ name: names[i], slug: slugs[i]})
+            }
+            setSelectedDescriptors(selected)
+          }
+        }
+
         setInitial(false)
       }
       getData();
     }, [initial])
-  
+    
+    useEffect(() => {
+      console.log(selectedDisciplines)
+      let nameArray = [];
+      let slugArray = [];
+      selectedDisciplines.forEach(input => {
+        nameArray.push(input.name)
+        slugArray.push(input.slug)
+        return { name: input.name, slug: input.slug }
+      })
+      router.push(`?disciplineName=${nameArray.join(",")}&disciplineSlug=${slugArray.join(",")}`)
+      sendSearch(true)
+    }, [selectedDisciplines])
+
+    useEffect(() => {
+      console.log(selectedDescriptors)
+      let nameArray = [];
+      let slugArray = [];
+      selectedDescriptors.forEach(input => {
+        nameArray.push(input.name)
+        slugArray.push(input.slug)
+        return { name: input.name, slug: input.slug }
+      })
+      router.push(`?descriptorName=${nameArray.join(",")}&descriptorSlug=${slugArray.join(",")}`)
+      sendSearch(true)
+    }, [selectedDescriptors])
+
     useEffect(() => {
       sendSearch(true)
-    }, [selectedDisciplines, selectedDescriptors, input])
+    }, [input])
+  
   
     const handleInputChange = e => {
       setInput(e.target.value)
@@ -224,7 +277,6 @@ const IndexPage = () => {
       const disciplinesFilters = Array.from(checkedBoxes).map(input => {
         return { name: input.name, slug: input.value }
       })
-  
       setSelectedDisciplines(disciplinesFilters)
       toggleDisciplines()
     }
@@ -817,11 +869,11 @@ const IndexPage = () => {
         >
           {
           isDirectory ? 
-          (<div className="container py-10 grid grid-cols-1 gap-6 grid-cols-2">{
+          (<div className="py-10 grid grid-cols-1 gap-6 grid-cols-2">{
             results.map((profile, index) => (
               <ProfileLine profile={profile} key={index} index={index} />
             ))}</div>) : 
-          (<div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">{
+          (<div className="py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">{
           results.map((profile, index) => (
             <ProfileCard profile={profile} key={index} index={index} />
           ))}</div>)

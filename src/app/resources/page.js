@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import ResourceCard from "@/components/resource-card";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Headings from "@/components/headings"
 
 
 const ResourcePage = ({}) => {
+  const searchParams = useSearchParams()
   const [initial, setInitial] = useState(true)
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -124,6 +126,13 @@ const ResourcePage = ({}) => {
       const resourcesRes = await fetch(resourcesUrl);
       const resourcesJSON = await resourcesRes.json();
       setTotalLength(resourcesJSON.meta.pagination.total)
+
+      if (searchParams.size > 0) {
+        if (searchParams.get('tagSlug').length > 0) {
+          setSelectedResourceTags([{name: searchParams.get('tagName'), slug: searchParams.get('tagSlug')}])
+        }
+      }
+
       setInitial(false)
   
     }
