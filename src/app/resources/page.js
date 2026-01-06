@@ -1,6 +1,6 @@
 'use client'; // add this part!
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import ResourceCard from "@/components/resource-card";
@@ -10,6 +10,8 @@ import Headings from "@/components/headings"
 
 const ResourcePage = ({}) => {
   const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
   const [initial, setInitial] = useState(true)
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -109,7 +111,7 @@ const ResourcePage = ({}) => {
       // Fetch data from a hypothetical CMS API endpoint
       const categoriesUrl = "https://sixty-backend-new.onrender.com/api/categories"
       const resourceTagsUrl = "https://sixty-backend-new.onrender.com/api/resource-tags"
-      const resourcesUrl = "https://sixty-backend-new.onrender.com/api/resources?populate[0]=categories&populate[1]=resource_tags"
+      const resourcesUrl = "https://sixty-backend-new.onrender.com/api/resources?populate[0]=categories&populate[1]=resource_tags&sort=title"
     
     
       const categoriesRes = await fetch(categoriesUrl);
@@ -131,6 +133,10 @@ const ResourcePage = ({}) => {
         if (searchParams.get('tagSlug').length > 0) {
           setSelectedResourceTags([{name: searchParams.get('tagName'), slug: searchParams.get('tagSlug')}])
         }
+        if (searchParams.get('categorySlug').length > 0) {
+          setSelectedCategories([{name: searchParams.get('categoryName'), slug: searchParams.get('categorySlug')}])
+        }
+        sendSearch(true)
       }
 
       setInitial(false)
@@ -141,10 +147,37 @@ const ResourcePage = ({}) => {
 
 
   useEffect(() => {
-    // if (tagSlug && initial) {
-    //   setInitial(false)
-    //   setSelectedResourceTags([{ name: tagName, slug: tagSlug }])
-    // }
+    router.replace(`${pathname}`);
+    const params = new URLSearchParams();
+
+      if (selectedResourceTags.length > 0) {
+        let nameArray = []
+        let slugArray = []
+        selectedResourceTags.forEach((tag) => {
+          nameArray.push(tag.name)
+          slugArray.push(tag.slug)
+        })
+
+        params.append('tagSlug', slugArray.join());
+        params.append('tagName', nameArray.join());
+      }
+
+      if (selectedCategories.length > 0) {
+        let nameArray = []
+        let slugArray = []
+        selectedCategories.forEach((category) => {
+          nameArray.push(category.name)
+          slugArray.push(category.slug)
+        })
+
+        params.append('categorySlug', slugArray.join());
+        params.append('categoryName', nameArray.join());
+      }
+
+      if ((selectedResourceTags.length > 0) || (selectedCategories.length > 0)) {
+        router.push(`?${params.toString().replaceAll("%2C", ",")}`);
+      }
+
     sendSearch(true)
   }, [selectedCategories, selectedResourceTags])
 
@@ -394,11 +427,13 @@ const ResourcePage = ({}) => {
         </p>
       }
     >
+      <div>
           <div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
       {results.map((resource, index) => (
         
         <ResourceCard resource={resource} key={index} index={index} />
       ))}
+    </div>
     </div>
     </InfiniteScroll>
   ) : (
@@ -412,7 +447,7 @@ const ResourcePage = ({}) => {
   )
 
   return (
-    <div>
+    <Suspense>
       <Headings
         title={"Knowledge Share"}
         description={"Browse through our carefully selected articles, tools, career advice, and more."}
@@ -483,7 +518,7 @@ const ResourcePage = ({}) => {
         </div>
         {resourceGrid}
       </main>
-    </div>
+    </Suspense>
   )
 }
 
