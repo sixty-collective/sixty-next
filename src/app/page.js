@@ -20,7 +20,7 @@ const  IndexPage = async () => {
     <div>
       <Headings
         title={"Sixty Collective"}
-        description={global.data.siteDescription}
+        description={"Sixty Collective"}
       />
       <div className="flex flex-col justify-center items-center width-full">
         <Image unoptimized className="w-full max-h-96" src={'/images/Sixty-Collective-Homepage.gif'} alt="An animation of a book opening up to have several tools fly out" width={500} height={500} />
@@ -45,7 +45,7 @@ const  IndexPage = async () => {
               </p>
               </div>
               <div className="flex border-black p-8 rounded-t-3xl member-gradient top-curve-border flex-col">
-              {/* <div className="w-full text-center font-bold text-sm mb-5">
+              <div className="w-full text-center font-bold text-sm mb-5">
                   Search profiles by popular discipline:
                 </div>
                 <div className="w-full text-center">
@@ -70,7 +70,7 @@ const  IndexPage = async () => {
                 >
                   Editor
                 </span></Link>
-                </div> */}
+                </div>
                 <div className="w-full text-center mt-5 underline font-bold">
                 <Link href={"/profiles"}>View All Member Profiles</Link>
                 </div>
@@ -89,7 +89,7 @@ const  IndexPage = async () => {
 
               </div>
               <div className="flex border-black p-8 rounded-t-3xl knowledge-gradient top-curve-border flex-col">
-                {/* <div className="w-full text-center font-bold text-sm mb-5">
+                <div className="w-full text-center font-bold text-sm mb-5">
                   Search resources by popular tag:
                 </div>
                 <div className="w-full text-center">
@@ -114,7 +114,7 @@ const  IndexPage = async () => {
                 >
                   Financial
                 </span></Link>
-                </div> */}
+                </div>
                 <div className="w-full text-center mt-5 underline font-bold">
                 <Link href={"/resources"}>View All Resources</Link>
                 </div>

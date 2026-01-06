@@ -31,7 +31,7 @@ const Page = (props: { params: Promise<{ slug: string }> }) => {
       }
     }
     fetchPage();
-  }, [slug])
+  }, [slug, error])
 
   function coverImageSection() {
     if (page.coverImage.ext === ".gif") {

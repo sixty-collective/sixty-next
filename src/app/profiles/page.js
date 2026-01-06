@@ -1,21 +1,21 @@
 'use client'; // add this part!
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Suspense } from "react"
 import PropTypes from "prop-types"
 import Image from "next/image"
-import InfiniteScroll from 'react-infinite-scroll-component';
-// import { useStaticQuery, graphql } from "gatsby"
-// import Layout from "../components/layout"
-// import Seo from "../components/seo"
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+// import InfiniteScroll from 'react-infinite-scroll-component';
 import Headings from "@/components/headings"
 import ProfileLine from "@/components/profile-line"
 import ProfileCard from "@/components/profile-card"
 
 
-const IndexPage = () => {
+const IndexPage = ({}) => {
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const router = useRouter()
     const [input, setInput] = useState("")
-    const [page, setPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isDirectory, setIsDirectory] = useState(false);
     const [initial, setInitial] = useState(true)
     const [visible, setVisible] = useState([
@@ -36,16 +36,17 @@ const IndexPage = () => {
     const [disciplines, setDisciplines] = useState([])
     const [selectedDescriptors, setSelectedDescriptors] = useState([])
     const [descriptors, setDescriptors] = useState([])
+    const [profiles, setProfiles] = useState([])
     const [results, setResults] = useState([])
     const [totalLength, setTotalLength] = useState(0)
     const [listText, setListText] = useState("List")
-    const [hasMore, setHasMore] = useState(true)
-    const [checkedDisciplinesState, setCheckedDisciplinesState] = useState(
-      []
-    )
-    const [checkedDescriptorsState, setCheckedDescriptorsState] = useState(
-      []
-    )
+    // const [hasMore, setHasMore] = useState(true)
+    // const [checkedDisciplinesState, setCheckedDisciplinesState] = useState(
+    //   []
+    // )
+    // const [checkedDescriptorsState, setCheckedDescriptorsState] = useState(
+    //   []
+    // )
     const [openDisciplines, setOpenDisciplines] = React.useState(false)
     const [openDescriptors, setOpenDescriptors] = React.useState(false)
 
@@ -82,122 +83,256 @@ const IndexPage = () => {
         setListText("Grid")
       }
 
-      sendSearch(true, 100)
     }
   
-    const sendSearch = async (resetPage, pageSize) => {
-      let pageSizeNum = pageSize || 10
-      setIsLoading(true);
-      let url;
-      if (resetPage) {
-        url =
-        "https://sixty-backend-new.onrender.com" +
-        "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
-      } else {
-        url =
-        "https://sixty-backend-new.onrender.com" +
-          "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
-      }
+    // const sendSearch = async (resetPage, pageSize) => {
+    //   console.log("sendSearch")
+    //   let pageSizeNum = pageSize || 10
+    //   setIsLoading(true);
+    //   let url;
+    //   if (resetPage) {
+    //     url =
+    //     "https://sixty-backend-new.onrender.com" +
+    //     "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+    //   } else {
+    //     url =
+    //     "https://sixty-backend-new.onrender.com" +
+    //     "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+    //   }
       
-      if (selectedDescriptors.length > 0) {
-        selectedDescriptors.forEach((selected, index) => {
-          url = url.concat("&filters[$or][" + index + "][descriptors][slug][$in]=" + selected.slug)
-        })
-      }
+    //   if (selectedDescriptors.length > 0) {
+    //     selectedDescriptors.forEach((selected, index) => {
+    //       url = url.concat("&filters[$or][" + index + "][descriptors][slug][$in]=" + selected.slug)
+    //     })
+    //   }
   
-      if (selectedDisciplines.length > 0) {
-        selectedDisciplines.forEach((selected, index) => {
-          url = url.concat("&filters[$or][" + index + "][disciplines][slug][$in]=" + selected.slug)
-        })
-      }
+    //   if (selectedDisciplines.length > 0) {
+    //     selectedDisciplines.forEach((selected, index) => {
+    //       url = url.concat("&filters[$or][" + index + "][disciplines][slug][$in]=" + selected.slug)
+    //     })
+    //   }
 
-      if (input.length > 0) {
-        url = url.concat("&filters[name][$containsi]=" + input)
-      }
+    //   if (input.length > 0) {
+    //     url = url.concat("&filters[name][$containsi]=" + input)
+    //   }
 
-      try {
-        await fetch(url).then(async response => {
-          const responseJson = await response.json();
-          setTotalLength(responseJson.meta.pagination.total)
-          if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
-            setHasMore(false)
-          }
-          if (resetPage) {
-            setResults(responseJson.data)
-            setPage(() => {
-              return 2;
-            });
-          } else {
-            setResults((prevResults) => {
-              return [...prevResults, ...responseJson.data]
-            })
-            setPage((prevPage) => {
-              return prevPage + 1;
-            });
-          }
-        })
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    function fetchData() {
-      console.log("fetch more")
-      sendSearch();
-    }
+      // try {
+      //   await fetch(url).then(async response => {
+      //     const responseJson = await response.json();
+      //     console.log(responseJson)
+      //     setTotalLength(responseJson.meta.pagination.total)
+      //     if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
+      //       setHasMore(false)
+      //     }
+      //     if (resetPage) {
+      //       setResults(responseJson.data)
+      //       setPage(() => {
+      //         return 2;
+      //       });
+      //     } else {
+      //       setResults((prevResults) => {
+      //         return [...prevResults, ...responseJson.data]
+      //       })
+      //       setPage((prevPage) => {
+      //         return prevPage + 1;
+      //       });
+      //     }
+      //   })
+      // } finally {
+      //   setIsLoading(false);
+      // }
+    // }
 
     useEffect(() => {
       async function getData() {
-        // Fetch data from a hypothetical CMS API endpoint
         const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category&pagination[pageSize]=200"
         const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category&pagination[pageSize]=200"
-        const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
-  
-      
-        const disciplinesRes = await fetch(disciplinesUrl);
-        const disciplinesData = await disciplinesRes.json();
-        console.log(disciplinesData)
-        setDisciplines(disciplinesData.data)
-        setCheckedDisciplinesState(new Array(disciplinesData.data.length).fill({status: false, discipline: ""}))
+        const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture&pagination[pageSize]=300&sort=name"
+
+        let disciplineSelected = [];
+        let disciplineSlugs = [];
+        let disciplineNames = [];
+        let descriptorSelected = [];
+        let descriptorSlugs = [];
+        let descriptorNames = [];
+
+        if (searchParams.get('disciplineSlug')){
+          disciplineSlugs = searchParams.get('disciplineSlug').split(',')
+          disciplineNames = searchParams.get('disciplineName').split(',')
+          for (var i = 0; i < disciplineSlugs.length; i++) {
+            const toAdd = { name: disciplineNames[i], slug: disciplineSlugs[i]};
+            disciplineSelected.push(toAdd)
+          }
+          setSelectedDisciplines(disciplineSelected)
+        }
+        if (searchParams.get('descriptorSlug')){
+          descriptorSlugs = searchParams.get('descriptorSlug').split(',')
+          descriptorNames = searchParams.get('descriptorName').split(',')
+          for (var i = 0; i < descriptorSlugs.length; i++) {
+            const toAdd = { name: descriptorNames[i], slug: descriptorSlugs[i]};
+            descriptorSelected.push(toAdd)
+          }
+          setSelectedDescriptors(descriptorSelected)
+        }
   
         const descriptorsRes = await fetch(descriptorsUrl);
         const descriptorsData = await descriptorsRes.json();
-        setDescriptors(descriptorsData.data)
-        setCheckedDescriptorsState(new Array(descriptorsData.data.length).fill({status: false, descriptor: ""}))
-      
+        const formattedDescriptors = descriptorsData.data.map((descriptor) => {
+          if (descriptorSlugs.includes(descriptor.slug)) {
+            descriptor.status = true;
+          } else {
+            descriptor.status = false;
+          }
+          return descriptor;
+        })
+        setDescriptors(formattedDescriptors)
+
+        const disciplinesRes = await fetch(disciplinesUrl);
+        const disciplinesData = await disciplinesRes.json();
+        const formattedDisciplines = disciplinesData.data.map((discipline) => {
+          if (disciplineSlugs.includes(discipline.slug)) {
+            discipline.status = true;
+          } else {
+            discipline.status = false;
+          }
+          return discipline;
+        })
+        setDisciplines(formattedDisciplines)
+
         const profilesRes = await fetch(profilesUrl);
-        const profiles = await profilesRes.json();
-        setTotalLength(profiles.meta.pagination.total)
-        // setResults(profiles.data)
+        const profileResults = await profilesRes.json();
+        setProfiles(profileResults.data)
+
+        if (!searchParams.get('disciplineSlug') && !searchParams.get('descriptorSlug')) {
+          setResults(profileResults.data)
+          setTotalLength(profileResults.meta.pagination.total)
+        } else {
+          console.log("asdfasdf")
+           let filteredProfiles = profileResults.data.filter((profile) => {
+          return profile.disciplines.some ((profileDiscipline) => {
+            return disciplineSelected.some((discipline) => {
+              if (discipline.slug == profileDiscipline.slug) {
+                return true
+              }
+            })
+          })
+          })
+          console.log(selectedDescriptors)
+          let filteredDProfiles = profileResults.data.filter((profile) => {
+          return profile.descriptors.some ((profileDescriptor) => {
+            return descriptorSelected.some((descriptor) => {
+              if (descriptor.slug == profileDescriptor.slug) {
+                return true
+              }
+            })
+          })
+          })
+          const profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
+           setResults(profilesToFilter)
+        setTotalLength(profilesToFilter.length)
+        }
+        setIsLoading(false)
         setInitial(false)
       }
       getData();
-    }, [initial])
-  
+    }, [initial, searchParams])
+    
     useEffect(() => {
-      sendSearch(true)
+      let profilesToFilter = [];
+      router.replace(`${pathname}`);
+      if (selectedDescriptors.length + selectedDisciplines.length == 0) {
+        profilesToFilter = profiles;
+      } else {
+        let filteredProfiles = profiles.filter((profile) => {
+        return profile.disciplines.some ((profileDiscipline) => {
+          return selectedDisciplines.some((discipline) => {
+            if (discipline.slug == profileDiscipline.slug) {
+              return true
+            }
+          })
+        })
+        })
+        let filteredDProfiles = profiles.filter((profile) => {
+        return profile.descriptors.some ((profileDescriptor) => {
+          return selectedDescriptors.some((descriptor) => {
+            if (descriptor.slug == profileDescriptor.slug) {
+              return true
+            }
+          })
+        })
+        })
+        profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
+      }
+
+      const params = new URLSearchParams();
+
+      if (selectedDisciplines.length > 0) {
+        let nameArray = []
+        let slugArray = []
+        selectedDisciplines.forEach((discipline) => {
+          nameArray.push(discipline.name)
+          slugArray.push(discipline.slug)
+        })
+
+        params.append('disciplineSlug', slugArray.join());
+        params.append('disciplineName', nameArray.join());
+      }
+
+      if (selectedDescriptors.length > 0) {
+        let nameArray = []
+        let slugArray = []
+        selectedDescriptors.forEach((descriptor) => {
+          nameArray.push(descriptor.name)
+          slugArray.push(descriptor.slug)
+        })
+
+        params.append('descriptorSlug', slugArray.join());
+        params.append('descriptorName', nameArray.join());
+      }
+
+      if (input.length > 0) {
+        let nameResults = profilesToFilter.filter((profile) => {
+          return profile.name.toLowerCase().includes(input.toLowerCase());
+        })
+        setResults(nameResults)
+        setTotalLength(nameResults.length)
+      } else {
+        setResults(profilesToFilter)
+        setTotalLength(profilesToFilter.length)
+      }
+
+      if ((selectedDisciplines.length > 0) || (selectedDescriptors.length > 0)) {
+        router.push(`?${params.toString().replaceAll("%2C", ",")}&`);
+      }
+
     }, [selectedDisciplines, selectedDescriptors, input])
   
     const handleInputChange = e => {
       setInput(e.target.value)
     }
   
-    const handleDisciplinesChange = (position, discipline) => {
-      const updatedCheckedDisciplinesState = checkedDisciplinesState.map(
-        (item, index) => {
-          return (index === position ? {status: !item.status, discipline: discipline} : item)
+    const handleDisciplinesChange = (discipline) => {
+      const updatedCheckedDisciplinesState = disciplines.map(
+        (item) => {
+          if (item.slug == discipline.slug) {
+            item.status = !item.status;
+          }
+          return item;
         }
       )
-      setCheckedDisciplinesState(updatedCheckedDisciplinesState)
+      setDisciplines(updatedCheckedDisciplinesState)
     }
   
-    const handleDescriptorsChange = (position, descriptor) => {
-      const updatedCheckedDescriptorsState = checkedDescriptorsState.map(
-        (item, index) => {
-          return (index === position ? {status: !item.status, descriptor: descriptor} : item)
+    const handleDescriptorsChange = (descriptor) => {
+       const updatedCheckedDescriptorsState = descriptors.map(
+        (item) => {
+          if (item.slug == descriptor.slug) {
+            item.status = !item.status;
+          }
+          return item;
         }
       )
-      setCheckedDescriptorsState(updatedCheckedDescriptorsState)
+      setDescriptors(updatedCheckedDescriptorsState)
     }
   
     const Checkbox = ({ obj, check, checked, onChange }) => {
@@ -218,13 +353,12 @@ const IndexPage = () => {
     }
   
     const handleDisciplinesApply = () => {
-      const checkedBoxes = document.querySelectorAll(
-        "input[class=disciplines-box]:checked"
-      )
-      const disciplinesFilters = Array.from(checkedBoxes).map(input => {
-        return { name: input.name, slug: input.value }
+      const disciplinesFilters = disciplines.filter((input) => {
+        if (input.status == true) {
+          return input;
+        }
       })
-  
+      
       setSelectedDisciplines(disciplinesFilters)
       toggleDisciplines()
     }
@@ -232,47 +366,54 @@ const IndexPage = () => {
     const handleClearDisciplines = () => {
       setSelectedDisciplines([])
       toggleDisciplines()
-      setCheckedDisciplinesState(
-        new Array(disciplines.length).fill({status: false, discipline: ""})
-      )
+      // setCheckedDisciplinesState(
+      //   new Array(disciplines.length).fill({status: false, discipline: ""})
+      // )
+    }
+
+    const handleClearInput = () => {
+      setInput("")
     }
   
     const handleClearSpecificDiscipline = (clearDiscipline) => {
-      setSelectedDisciplines(selectedDisciplines.filter(function(discipline) { 
-          return discipline !== clearDiscipline 
-      }));
-      let newArray = checkedDisciplinesState.map(function(discipline) { 
-        if (discipline.discipline.slug !== clearDiscipline.slug) {
-          return discipline
-        } else {
-          return {status: false, discipline: discipline}
-        }
+      let newSelectedDisciplines = selectedDisciplines.filter(function(discipline) { 
+          return discipline !== clearDiscipline
       })
-      setCheckedDisciplinesState(newArray)
+      setSelectedDisciplines(newSelectedDisciplines);
+
+      let newArray = disciplines.map(function(discipline) { 
+        if (discipline.slug == clearDiscipline.slug) {
+          discipline.status = false;
+        } 
+        
+        return discipline;
+      })
+      setDisciplines(newArray)
     }
   
     const handleClearSpecificDescriptor = (clearDescriptor) => {
-      setSelectedDescriptors(selectedDescriptors.filter(function(descriptor) { 
-          return descriptor !== clearDescriptor 
-      }));
-      let newArray = checkedDescriptorsState.map(function(descriptor) { 
-        if (descriptor.descriptor.slug !== clearDescriptor.slug) {
-          return descriptor
-        } else {
-          return {status: false, descriptor: descriptor.descriptor}
-        }
+      let newSelectedDescriptors = selectedDescriptors.filter(function(descriptor) { 
+          return descriptor !== clearDescriptor
       })
-      setCheckedDescriptorsState(newArray)
+      setSelectedDescriptors(newSelectedDescriptors);
+
+      let newArray = descriptors.map(function(descriptor) { 
+        if (descriptor.slug == clearDescriptor.slug) {
+          descriptor.status = false;
+        } 
+        
+        return descriptor;
+      })
+      setDescriptors(newArray)
     }
   
     const handleDescriptorsApply = () => {
-      const checkedBoxes = document.querySelectorAll(
-        "input[class=descriptors-box]:checked"
-      )
-      const descriptorsFilters = Array.from(checkedBoxes).map(input => {
-        return { name: input.name, slug: input.value }
+      const descriptorsFilters = descriptors.filter((input) => {
+        if (input.status == true) {
+          return input;
+        }
       })
-  
+      
       setSelectedDescriptors(descriptorsFilters)
       toggleDescriptors()
     }
@@ -280,9 +421,9 @@ const IndexPage = () => {
     const handleClearDescriptors = () => {
       setSelectedDescriptors([])
       toggleDescriptors()
-      setCheckedDescriptorsState(
-        new Array(descriptors.length).fill({status: false, descriptor: ""})
-      )
+      // setCheckedDescriptorsState(
+      //   new Array(descriptors.length).fill({status: false, descriptor: ""})
+      // )
     }
   
     function fdisciplines() {
@@ -334,13 +475,11 @@ const IndexPage = () => {
                         index={index}
                         check="disciplines-box"
                         checked={
-                          checkedDisciplinesState[
-                            vDisciplines.length + wDisciplines.length + index
-                          ].status
+                          discipline.status
                         }
                         onChange={() =>
                           handleDisciplinesChange(
-                            vDisciplines.length + wDisciplines.length + index, discipline
+                           discipline
                           )
                         }
                       />
@@ -374,21 +513,11 @@ const IndexPage = () => {
                         index={index}
                         check="disciplines-box"
                         checked={
-                          checkedDisciplinesState[
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              aDisciplines.length +
-                              pDisciplines.length +
-                              index
-                          ].status
+                          discipline.status
                         }
                         onChange={() =>
                           handleDisciplinesChange(
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              aDisciplines.length +
-                              pDisciplines.length +
-                              index, discipline
+                           discipline
                           )
                         }
                       />
@@ -421,8 +550,14 @@ const IndexPage = () => {
                         obj={discipline}
                         index={index}
                         check="disciplines-box"
-                        checked={checkedDisciplinesState[index].status}
-                        onChange={() => handleDisciplinesChange(index, discipline)}
+                        checked={
+                          discipline.status
+                        }
+                        onChange={() =>
+                          handleDisciplinesChange(
+                           discipline
+                          )
+                        }
                       />
                     </div>
                   )
@@ -454,19 +589,11 @@ const IndexPage = () => {
                         index={index}
                         check="disciplines-box"
                         checked={
-                          checkedDisciplinesState[
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              aDisciplines.length +
-                              index
-                          ].status
+                          discipline.status
                         }
                         onChange={() =>
                           handleDisciplinesChange(
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              aDisciplines.length +
-                              index, discipline
+                           discipline
                           )
                         }
                       />
@@ -500,23 +627,11 @@ const IndexPage = () => {
                         index={index}
                         check="disciplines-box"
                         checked={
-                          checkedDisciplinesState[
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              pDisciplines.length +
-                              aDisciplines.length +
-                              lDisciplines.length +
-                              index
-                          ].status
+                          discipline.status
                         }
                         onChange={() =>
                           handleDisciplinesChange(
-                            vDisciplines.length +
-                              wDisciplines.length +
-                              pDisciplines.length +
-                              aDisciplines.length +
-                              lDisciplines.length +
-                              index, discipline
+                           discipline
                           )
                         }
                       />
@@ -550,10 +665,12 @@ const IndexPage = () => {
                         index={index}
                         check="disciplines-box"
                         checked={
-                          checkedDisciplinesState[vDisciplines.length + index].status
+                          discipline.status
                         }
                         onChange={() =>
-                          handleDisciplinesChange(vDisciplines.length + index, discipline)
+                          handleDisciplinesChange(
+                           discipline
+                          )
                         }
                       />
                     </div>
@@ -635,8 +752,14 @@ const IndexPage = () => {
                         obj={descriptor}
                         index={index}
                         check="descriptors-box"
-                        checked={checkedDescriptorsState[index].status}
-                        onChange={() => handleDescriptorsChange(index, descriptor)}
+                        checked={
+                          descriptor.status
+                        }
+                        onChange={() =>
+                          handleDescriptorsChange(
+                           descriptor
+                          )
+                        }
                       />
                     </div>
                   )
@@ -670,10 +793,12 @@ const IndexPage = () => {
                         index={index}
                         check="descriptors-box"
                         checked={
-                          checkedDescriptorsState[cDescriptors.length + index].status
+                          descriptor.status
                         }
                         onChange={() =>
-                          handleDescriptorsChange(cDescriptors.length + index, descriptor)
+                          handleDescriptorsChange(
+                           descriptor
+                          )
                         }
                       />
                     </div>
@@ -708,13 +833,11 @@ const IndexPage = () => {
                         index={index}
                         check="descriptors-box"
                         checked={
-                          checkedDescriptorsState[
-                            cDescriptors.length + jDescriptors.length + index
-                          ].status
+                          descriptor.status
                         }
                         onChange={() =>
                           handleDescriptorsChange(
-                            cDescriptors.length + jDescriptors.length + index, descriptor
+                           descriptor
                           )
                         }
                       />
@@ -750,19 +873,11 @@ const IndexPage = () => {
                         index={index}
                         check="descriptors-box"
                         checked={
-                          checkedDescriptorsState[
-                            cDescriptors.length +
-                              jDescriptors.length +
-                              aDescriptors.length +
-                              index
-                          ].status
+                          descriptor.status
                         }
                         onChange={() =>
                           handleDescriptorsChange(
-                            cDescriptors.length +
-                              jDescriptors.length +
-                              aDescriptors.length +
-                              index, descriptor
+                           descriptor
                           )
                         }
                       />
@@ -804,29 +919,30 @@ const IndexPage = () => {
     }
   
     const profileGrid = (results.length > 0) ? (
-      <InfiniteScroll
-          dataLength={results.length} //This is important field to render the next data
-          next={fetchData}
-          hasMore={hasMore}
-          loader={<div style={{ textAlign: 'center' }}><h4>Loading...</h4></div>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b></b>
-            </p>
-          }
-        >
+      // <InfiniteScroll
+      //     dataLength={results.length} //This is important field to render the next data
+      //     next={fetchData}
+      //     hasMore={hasMore}
+      //     loader={<div style={{ textAlign: 'center' }}><h4>Loading...</h4></div>}
+      //     endMessage={
+      //       <p style={{ textAlign: 'center' }}>
+      //         <b></b>
+      //       </p>
+      //     }
+      //   >
+      <div>
           {
           isDirectory ? 
-          (<div className="container py-10 grid grid-cols-1 gap-6 grid-cols-2">{
+          (<div className="py-10 grid grid-cols-1 gap-6 grid-cols-2">{
             results.map((profile, index) => (
               <ProfileLine profile={profile} key={index} index={index} />
             ))}</div>) : 
-          (<div className="container py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">{
+          (<div className="py-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">{
           results.map((profile, index) => (
             <ProfileCard profile={profile} key={index} index={index} />
           ))}</div>)
         }
-        </InfiniteScroll>
+        </div>
     ) : (
       <div className="container">
       {isLoading ? (<div className="mt-10 p-10 bg-white rounded-3xl font-fira border-black border-2 shadow-md">
@@ -838,9 +954,17 @@ const IndexPage = () => {
     )
   
     const yourSearch =
-      selectedDisciplines.length > 0 || selectedDescriptors.length > 0 ? (
+      selectedDisciplines.length > 0 || selectedDescriptors.length > 0 || input.length > 0 ? (
         <div className="mt-5">
           <div className="text-xs">Your search:</div>
+          {input.length > 0 ? (<span
+              className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border"
+              >
+                <a href="#" onClick={() => handleClearInput()}>
+                  <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                </a>
+                <span className="pl-1">{input}</span>
+              </span>): (<span></span>)}
           {selectedDisciplines.map((discipline, index) => {
             return (
               <span
@@ -873,7 +997,7 @@ const IndexPage = () => {
       )
 
   return (
-    <div>
+    <Suspense>
       <Headings
         title={"Member Profiles"}
         description={"Learn about our members, hire talent, find collaborators, and more."}
@@ -974,7 +1098,7 @@ const IndexPage = () => {
           {profileGrid}
         </div>
       </main>
-    </div>
+    </Suspense>
   )
 }
 

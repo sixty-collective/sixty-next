@@ -55,7 +55,7 @@ const ProfilePage = (props: { params: Promise<{ slug: string }> }) => {
       }
     }
     getData();
-    }, [slug])
+    }, [slug, error])
 
   const handleToggle = () => {
     // if (visible) {
