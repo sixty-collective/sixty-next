@@ -14,7 +14,7 @@ const ResourcePage = ({}) => {
   const router = useRouter()
   const [initial, setInitial] = useState(true)
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState([])
   const [categories, setCategories] = useState([])
   const [selectedResourceTags, setSelectedResourceTags] = useState([])
@@ -22,12 +22,6 @@ const ResourcePage = ({}) => {
   const [results, setResults] = useState([])
   const [totalLength, setTotalLength] = useState(0)
   const [hasMore, setHasMore] = useState(true)
-  const [checkedCategoriesState, setCheckedCategoriesState] = useState(
-    []
-  )
-  const [checkedResourceTagsState, setCheckedResourceTagsState] = useState(
-    []
-  )
   const [openCategories, setOpenCategories] = React.useState(false)
   const [openResourceTags, setOpenResourceTags] = React.useState(false)
 
@@ -58,51 +52,56 @@ const ResourcePage = ({}) => {
   }
 
   const sendSearch = async (resetPage) => {
-    setIsLoading(true);
-    let url;
-    if (resetPage) {
-      url =
-      "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ 1 + "&populate[0]=categories&populate[1]=resource_tags"
+    if (initial) {
+      return;
     } else {
-      url =
-      "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ page + "&populate[0]=categories&populate[1]=resource_tags"
-    }
-    
-    if (selectedCategories.length > 0) {
-      selectedCategories.forEach((selected, index) => {
-        url = url.concat("&filters[$or][" + index + "][categories][slug][$in]=" + selected.slug)
-      })
-    }
-    
-    if (selectedResourceTags.length > 0) {
-      selectedResourceTags.forEach((selected, index) => {
-        url = url.concat("&filters[$or][" + index + "][resource_tags][slug][$in]=" + selected.slug)
-      })
-    }
-
-    try {
-      await fetch(url).then(async response => {
-        const responseJson = await response.json();
-        setTotalLength(responseJson.meta.pagination.total)
-          if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
-            setHasMore(false)
+      console.log(selectedCategories, selectedResourceTags)
+      setIsLoading(true);
+      let url;
+      if (resetPage) {
+        url =
+        "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ 1 + "&populate[0]=categories&populate[1]=resource_tags"
+      } else {
+        url =
+        "https://sixty-backend-new.onrender.com/api/resources?sort=id&pagination[pageSize]=10&pagination[page]="+ page + "&populate[0]=categories&populate[1]=resource_tags"
+      }
+      
+      if (selectedCategories.length > 0) {
+        selectedCategories.forEach((selected, index) => {
+          url = url.concat("&filters[$or][" + index + "][categories][slug][$in]=" + selected.slug)
+        })
+      }
+      
+      if (selectedResourceTags.length > 0) {
+        selectedResourceTags.forEach((selected, index) => {
+          url = url.concat("&filters[$or][" + index + "][resource_tags][slug][$in]=" + selected.slug)
+        })
+      }
+  
+      try {
+        await fetch(url).then(async response => {
+          const responseJson = await response.json();
+          setTotalLength(responseJson.meta.pagination.total)
+            if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
+              setHasMore(false)
+            }
+          if (resetPage) {
+            setResults(responseJson.data)
+            setPage(() => {
+              return 2;
+            });
+          } else {
+            setResults((prevResults) => {
+              return [...prevResults, ...responseJson.data]
+            })
+            setPage((prevPage) => {
+              return prevPage + 1;
+            });
           }
-        if (resetPage) {
-          setResults(responseJson.data)
-          setPage(() => {
-            return 2;
-          });
-        } else {
-          setResults((prevResults) => {
-            return [...prevResults, ...responseJson.data]
-          })
-          setPage((prevPage) => {
-            return prevPage + 1;
-          });
-        }
-      })
-    } finally {
-      setIsLoading(false);
+        })
+      } finally {
+        setIsLoading(false);
+      }
     }
   }
 
@@ -111,36 +110,66 @@ const ResourcePage = ({}) => {
       // Fetch data from a hypothetical CMS API endpoint
       const categoriesUrl = "https://sixty-backend-new.onrender.com/api/categories"
       const resourceTagsUrl = "https://sixty-backend-new.onrender.com/api/resource-tags"
-      const resourcesUrl = "https://sixty-backend-new.onrender.com/api/resources?populate[0]=categories&populate[1]=resource_tags&sort=title"
     
-    
+      let tagSelected = [];
+      let tagSlugs = [];
+      let tagNames = [];
+      let categorySelected = [];
+      let categorySlugs = [];
+      let categoryNames = [];
+
+       if (searchParams.get('tagSlug')){
+          tagSlugs = searchParams.get('tagSlug').split(',')
+          tagNames = searchParams.get('tagName').split(',')
+          for (var i = 0; i < tagSlugs.length; i++) {
+            const toAdd = { name: tagNames[i], slug: tagSlugs[i]};
+            tagSelected.push(toAdd)
+          }
+          setSelectedResourceTags(tagSelected)
+        }
+        if (searchParams.get('categorySlug')){
+          categorySlugs = searchParams.get('categorySlug').split(',')
+          categoryNames = searchParams.get('categoryName').split(',')
+          for (var i = 0; i < categorySlugs.length; i++) {
+            const toAdd = { name: categoryNames[i], slug: categorySlugs[i]};
+            categorySelected.push(toAdd)
+          }
+          setSelectedCategories(categorySelected)
+        }
+
       const categoriesRes = await fetch(categoriesUrl);
       const categoriesJSON = await categoriesRes.json();
-      setCategories(categoriesJSON.data)
-      setCheckedCategoriesState(new Array(categoriesJSON.data.length).fill({status: false, category: ""}))
-
+      const formattedCategories = categoriesJSON.data.map((category) => {
+        if (categorySlugs.includes(category.slug)) {
+          category.status = true;
+        } else {
+          category.status = false;
+        }
+        return category;
+      })
+      setCategories(formattedCategories)
     
       const resourceTagsRes = await fetch(resourceTagsUrl);
       const resourceTagsJSON = await resourceTagsRes.json();
-      setResourceTags(resourceTagsJSON.data)
-      setCheckedResourceTagsState(new Array(resourceTagsJSON.data.length).fill({status: false, tag: ""}))
-    
-      const resourcesRes = await fetch(resourcesUrl);
-      const resourcesJSON = await resourcesRes.json();
-      setTotalLength(resourcesJSON.meta.pagination.total)
-
-      if (searchParams.size > 0) {
-        if (searchParams.get('tagSlug').length > 0) {
-          setSelectedResourceTags([{name: searchParams.get('tagName'), slug: searchParams.get('tagSlug')}])
+      const formattedTags = resourceTagsJSON.data.map((tag) => {
+        if (tagSlugs.includes(tag.slug)) {
+          tag.status = true;
+        } else {
+          tag.status = false;
         }
-        if (searchParams.get('categorySlug').length > 0) {
-          setSelectedCategories([{name: searchParams.get('categoryName'), slug: searchParams.get('categorySlug')}])
-        }
-        sendSearch(true)
+        return tag;
+      })
+      setResourceTags(formattedTags)
+      if (!(searchParams.get('tagSlug') || searchParams.get('categorySlug'))) {
+        // const resourcesUrl = "https://sixty-backend-new.onrender.com/api/resources?populate[0]=categories&populate[1]=resource_tags&sort=title"
+        // const resourcesRes = await fetch(resourcesUrl);
+        // const resourcesJSON = await resourcesRes.json();
+        // setResults(resourcesJSON.data)
+        // setTotalLength(resourcesJSON.meta.pagination.total)
+        sendSearch(true);
+        // setIsLoading(false);
       }
-
       setInitial(false)
-  
     }
     getData();
   }, [initial])
@@ -177,7 +206,7 @@ const ResourcePage = ({}) => {
       if ((selectedResourceTags.length > 0) || (selectedCategories.length > 0)) {
         router.push(`?${params.toString().replaceAll("%2C", ",")}`);
       }
-
+    setHasMore(true)
     sendSearch(true)
   }, [selectedCategories, selectedResourceTags])
 
@@ -188,11 +217,10 @@ const ResourcePage = ({}) => {
   
 
   const handleCategoriesApply = () => {
-    const checkedBoxes = document.querySelectorAll(
-      "input[class=categories-box]:checked"
-    )
-    const categoriesFilters = Array.from(checkedBoxes).map(input => {
-      return { name: input.name, slug: input.value }
+    const categoriesFilters = categories.filter(input => {
+      if (input.status == true) {
+        return input;
+      }
     })
 
     setSelectedCategories(categoriesFilters)
@@ -200,11 +228,10 @@ const ResourcePage = ({}) => {
   }
 
   const handleTagsApply = () => {
-    const checkedBoxes = document.querySelectorAll(
-      "input[class=tags-box]:checked"
-    )
-    const tagsFilters = Array.from(checkedBoxes).map(input => {
-      return { name: input.name, slug: input.value }
+    const tagsFilters = resourceTags.filter(input => {
+      if (input.status == true) {
+        return input;
+      }
     })
 
     setSelectedResourceTags(tagsFilters)
@@ -214,68 +241,67 @@ const ResourcePage = ({}) => {
   const handleClearCategories = () => {
     setSelectedCategories([])
     toggleCategories()
-    setCheckedCategoriesState(
-      new Array(categories.length).fill({status: false, category: ""})
-    )
   }
 
   const handleClearTags = () => {
     setSelectedResourceTags([])
     toggleTags()
-    setCheckedResourceTagsState(
-      new Array(resourceTags.length).fill({status: false, tag: ""})
-    )
   }
 
-  const handleCategoriesChange = (position, category) => {
-    const updatedCheckedCategoriesState = checkedCategoriesState.map(
-      (item, index) => {
-        return (index === position ? {status: !item.status, category: category} : item)
+  const handleCategoriesChange = (category) => {
+    const updatedCheckedCategoriesState = categories.map(
+      (item) => {
+        if (item.slug == category.slug) {
+          item.status = !item.status;
+        }
+        return item;
       }
     )
 
-    setCheckedCategoriesState(updatedCheckedCategoriesState)
+    setCategories(updatedCheckedCategoriesState)
   }
 
-  const handleTagsChange = (position, tag) => {
-    const updatedCheckedResourceTagsState = checkedResourceTagsState.map(
-      (item, index) => {
-        return (index === position ? {status: !item.status, tag: tag} : item)
+  const handleTagsChange = (tag) => {
+    const updatedCheckedResourceTagsState = resourceTags.map(
+      (item) => {
+        if (item.slug == tag.slug) {
+          item.status = !item.status;
+        }
+        return item;
       }
     )
 
-    setCheckedResourceTagsState(updatedCheckedResourceTagsState)
+    setResourceTags(updatedCheckedResourceTagsState)
   }
 
   const handleClearSpecificCategory = (clearCategory) => {
-    setSelectedCategories(selectedCategories.filter(function(category) { 
+    let newSelectedCategories = selectedCategories.filter(function(category) { 
         return category !== clearCategory 
-    }));
-    let newArray = checkedCategoriesState.map(function(category) { 
-      console.log(category)
-      console.log(clearCategory)
-      if (category.category.slug !== clearCategory.slug) {
-        return category
-      } else {
-        return {status: false, category: category.category}
-      }
-    })
+    });
+    setSelectedCategories(newSelectedCategories)
 
-    setCheckedCategoriesState(newArray)
+    let newArray = categories.map(function(category) { 
+      if (category.slug == clearCategory.slug) {
+        category.status = false;
+      } 
+        return category;
+    })
+    setCategories(newArray)
   }
 
   const handleClearSpecificTag = (clearTag) => {
-    setSelectedResourceTags(selectedResourceTags.filter(function(tag) { 
+    let newSelectedResourceTags = selectedResourceTags.filter(function(tag) { 
         return tag !== clearTag 
-    }));
-    let newArray = checkedResourceTagsState.map(function(tag) { 
-      if (tag.tag.slug !== clearTag.slug) {
-        return tag
-      } else {
-        return {status: false, tag: tag.tag}
-      }
+    });
+    setSelectedResourceTags(newSelectedResourceTags);
+    
+    let newArray = resourceTags.map(function(tag) { 
+      if (tag.slug == clearTag.slug) {
+        tag.status = false;
+      } 
+      return tag;
     })
-    setCheckedResourceTagsState(newArray)
+    setResourceTags(newArray)
   }
 
   const Checkbox = ({ obj, check, checked, onChange }) => {
@@ -307,8 +333,8 @@ const ResourcePage = ({}) => {
                     obj={category}
                     index={index}
                     check="categories-box"
-                    checked={checkedCategoriesState[index].status}
-                    onChange={() => handleCategoriesChange(index, category)}
+                    checked={category.status}
+                    onChange={() => handleCategoriesChange(category)}
                   />
                 </li>
               )
@@ -341,8 +367,8 @@ const ResourcePage = ({}) => {
                   obj={tag}
                   index={index}
                   check="tags-box"
-                  checked={checkedResourceTagsState[index].status}
-                  onChange={() => handleTagsChange(index,tag)}
+                  checked={tag.status}
+                  onChange={() => handleTagsChange(tag)}
                 />
               </li>
             )
@@ -379,16 +405,16 @@ const ResourcePage = ({}) => {
     selectedCategories.length > 0 || selectedResourceTags.length > 0 ? (
       <div className="mt-5">
         <div className="text-xs">Your search:</div>
-        {selectedCategories.map((categories, index) => {
+        {selectedCategories.map((category, index) => {
           return (
             <span
             className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border items-center"
               key={index}
             >
-              <a href="#" onClick={() => handleClearSpecificCategory(categories)}>
+              <a href="#" onClick={() => handleClearSpecificCategory(category)}>
                 <Image alt="" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
               </a>
-              <span className="pl-1">{categories.name}</span>
+              <span className="pl-1">{category.name}</span>
             </span>
           )
         })}
