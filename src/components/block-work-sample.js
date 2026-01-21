@@ -145,12 +145,14 @@ const BlockWorkSample = ({ data, colorIndex }) => {
             {data.images.map(file => {
               if (file.ext == ".pdf") {
                 return (
+                  <div key={file.id} className="h-[500px]">
                   <embed
-                  className="h-[500px]"
+                  className="h-[510px] w-full"
                   key={file.id}
                   type='application/pdf'
                   src={file.url}
                   />
+                  </div>
                 )
               } else {
                 return (

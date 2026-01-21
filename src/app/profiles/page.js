@@ -1,19 +1,21 @@
 'use client'; // add this part!
 
-import React, { useState, useEffect, Suspense } from "react"
+import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import Image from "next/image"
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-// import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Headings from "@/components/headings"
 import ProfileLine from "@/components/profile-line"
 import ProfileCard from "@/components/profile-card"
+import { useDebouncedCallback } from 'use-debounce';
 
 
 const IndexPage = ({}) => {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const router = useRouter()
+    const [page, setPage] = useState(1);
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(true);
     const [isDirectory, setIsDirectory] = useState(false);
@@ -40,7 +42,7 @@ const IndexPage = ({}) => {
     const [results, setResults] = useState([])
     const [totalLength, setTotalLength] = useState(0)
     const [listText, setListText] = useState("List")
-    // const [hasMore, setHasMore] = useState(true)
+    const [hasMore, setHasMore] = useState(true)
     // const [checkedDisciplinesState, setCheckedDisciplinesState] = useState(
     //   []
     // )
@@ -85,69 +87,70 @@ const IndexPage = ({}) => {
 
     }
   
-    // const sendSearch = async (resetPage, pageSize) => {
-    //   console.log("sendSearch")
-    //   let pageSizeNum = pageSize || 10
-    //   setIsLoading(true);
-    //   let url;
-    //   if (resetPage) {
-    //     url =
-    //     "https://sixty-backend-new.onrender.com" +
-    //     "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
-    //   } else {
-    //     url =
-    //     "https://sixty-backend-new.onrender.com" +
-    //     "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
-    //   }
+    const sendSearch = async (resetPage, pageSize) => {
+       if (initial) {
+      return;
+    } else {
+      let pageSizeNum = pageSize || 10
+      setIsLoading(true);
+      let url;
+      if (resetPage) {
+        url =
+        "https://sixty-backend-new.onrender.com" +
+        "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + 1 + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+      } else {
+        url =
+        "https://sixty-backend-new.onrender.com" +
+        "/api/profiles?sort=name&pagination[pageSize]=" + pageSizeNum + "&pagination[page]=" + page + "&populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture"
+      }
       
-    //   if (selectedDescriptors.length > 0) {
-    //     selectedDescriptors.forEach((selected, index) => {
-    //       url = url.concat("&filters[$or][" + index + "][descriptors][slug][$in]=" + selected.slug)
-    //     })
-    //   }
+      if (selectedDescriptors.length > 0) {
+        selectedDescriptors.forEach((selected, index) => {
+          url = url.concat("&filters[$or][" + index + "][descriptors][slug][$in]=" + selected.slug)
+        })
+      }
   
-    //   if (selectedDisciplines.length > 0) {
-    //     selectedDisciplines.forEach((selected, index) => {
-    //       url = url.concat("&filters[$or][" + index + "][disciplines][slug][$in]=" + selected.slug)
-    //     })
-    //   }
+      if (selectedDisciplines.length > 0) {
+        selectedDisciplines.forEach((selected, index) => {
+          url = url.concat("&filters[$or][" + index + "][disciplines][slug][$in]=" + selected.slug)
+        })
+      }
 
-    //   if (input.length > 0) {
-    //     url = url.concat("&filters[name][$containsi]=" + input)
-    //   }
-
-      // try {
-      //   await fetch(url).then(async response => {
-      //     const responseJson = await response.json();
-      //     console.log(responseJson)
-      //     setTotalLength(responseJson.meta.pagination.total)
-      //     if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
-      //       setHasMore(false)
-      //     }
-      //     if (resetPage) {
-      //       setResults(responseJson.data)
-      //       setPage(() => {
-      //         return 2;
-      //       });
-      //     } else {
-      //       setResults((prevResults) => {
-      //         return [...prevResults, ...responseJson.data]
-      //       })
-      //       setPage((prevPage) => {
-      //         return prevPage + 1;
-      //       });
-      //     }
-      //   })
-      // } finally {
-      //   setIsLoading(false);
-      // }
-    // }
+      if (input.length > 0) {
+        url = url.concat("&filters[name][$containsi]=" + input)
+      }
+      try {
+        await fetch(url).then(async response => {
+          const responseJson = await response.json();
+          setTotalLength(responseJson.meta.pagination.total)
+          if (responseJson.meta.pagination.page == responseJson.meta.pagination.pageCount) {
+            setHasMore(false)
+          }
+          if (resetPage) {
+            setResults(responseJson.data)
+            setPage(() => {
+              return 2;
+            });
+          } else {
+            setResults((prevResults) => {
+              return [...prevResults, ...responseJson.data]
+            })
+            setPage((prevPage) => {
+              return prevPage + 1;
+            });
+          }
+        })
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    }
 
     useEffect(() => {
       async function getData() {
         const disciplinesUrl = "https://sixty-backend-new.onrender.com/api/disciplines?populate[0]=discipline_category&pagination[pageSize]=200"
         const descriptorsUrl = "https://sixty-backend-new.onrender.com/api/descriptors?populate[0]=descriptor_category&pagination[pageSize]=200"
-        const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture&pagination[pageSize]=300&sort=name"
+        // const profilesUrl = "https://sixty-backend-new.onrender.com/api/profiles?populate[0]=disciplines&populate[1]=descriptors&populate[2]=profilePicture&pagination[pageSize]=300&sort=name"
 
         let disciplineSelected = [];
         let disciplineSlugs = [];
@@ -199,71 +202,70 @@ const IndexPage = ({}) => {
         })
         setDisciplines(formattedDisciplines)
 
-        const profilesRes = await fetch(profilesUrl);
-        const profileResults = await profilesRes.json();
-        setProfiles(profileResults.data)
+        // const profilesRes = await fetch(profilesUrl);
+        // const profileResults = await profilesRes.json();
+        // setProfiles(profileResults.data)
 
         if (!searchParams.get('disciplineSlug') && !searchParams.get('descriptorSlug')) {
-          setResults(profileResults.data)
-          setTotalLength(profileResults.meta.pagination.total)
-        } else {
-          console.log("asdfasdf")
-           let filteredProfiles = profileResults.data.filter((profile) => {
-          return profile.disciplines.some ((profileDiscipline) => {
-            return disciplineSelected.some((discipline) => {
-              if (discipline.slug == profileDiscipline.slug) {
-                return true
-              }
-            })
-          })
-          })
-          console.log(selectedDescriptors)
-          let filteredDProfiles = profileResults.data.filter((profile) => {
-          return profile.descriptors.some ((profileDescriptor) => {
-            return descriptorSelected.some((descriptor) => {
-              if (descriptor.slug == profileDescriptor.slug) {
-                return true
-              }
-            })
-          })
-          })
-          const profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
-           setResults(profilesToFilter)
-        setTotalLength(profilesToFilter.length)
-        }
-        setIsLoading(false)
+          // setResults(profileResults.data)
+          // setTotalLength(profileResults.meta.pagination.total)
+          sendSearch(true);
+        } //else {
+          //  let filteredProfiles = profileResults.data.filter((profile) => {
+          // return profile.disciplines.some ((profileDiscipline) => {
+          //   return disciplineSelected.some((discipline) => {
+          //     if (discipline.slug == profileDiscipline.slug) {
+          //       return true
+          //     }
+          //   })
+          // })
+          // })
+          // console.log(selectedDescriptors)
+          // let filteredDProfiles = profileResults.data.filter((profile) => {
+          // return profile.descriptors.some ((profileDescriptor) => {
+          //   return descriptorSelected.some((descriptor) => {
+          //     if (descriptor.slug == profileDescriptor.slug) {
+          //       return true
+          //     }
+          //   })
+          // })
+          // })
+          // const profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
+        //    setResults(profilesToFilter)
+        // setTotalLength(profilesToFilter.length)
+        // }
         setInitial(false)
       }
       getData();
-    }, [initial, searchParams])
+    }, [initial])
     
     useEffect(() => {
-      let profilesToFilter = [];
+      // let profilesToFilter = profiles;
       router.replace(`${pathname}`);
-      if (selectedDescriptors.length + selectedDisciplines.length == 0) {
-        profilesToFilter = profiles;
-      } else {
-        let filteredProfiles = profiles.filter((profile) => {
-        return profile.disciplines.some ((profileDiscipline) => {
-          return selectedDisciplines.some((discipline) => {
-            if (discipline.slug == profileDiscipline.slug) {
-              return true
-            }
-          })
-        })
-        })
-        let filteredDProfiles = profiles.filter((profile) => {
-        return profile.descriptors.some ((profileDescriptor) => {
-          return selectedDescriptors.some((descriptor) => {
-            if (descriptor.slug == profileDescriptor.slug) {
-              return true
-            }
-          })
-        })
-        })
-        profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
-      }
-
+      // if (selectedDescriptors.length + selectedDisciplines.length == 0) {
+      //   profilesToFilter = profiles;
+      // } else {
+      //   let filteredProfiles = profiles.filter((profile) => {
+      //   return profile.disciplines.some ((profileDiscipline) => {
+      //     return selectedDisciplines.some((discipline) => {
+      //       if (discipline.slug == profileDiscipline.slug) {
+      //         return true
+      //       }
+      //     })
+      //   })
+      //   })
+      //   let filteredDProfiles = profiles.filter((profile) => {
+      //   return profile.descriptors.some ((profileDescriptor) => {
+      //     return selectedDescriptors.some((descriptor) => {
+      //       if (descriptor.slug == profileDescriptor.slug) {
+      //         return true
+      //       }
+      //     })
+      //   })
+      //   })
+      //   profilesToFilter = [...new Set([...filteredProfiles, ...filteredDProfiles])]
+      // }
+      setHasMore(true)
       const params = new URLSearchParams();
 
       if (selectedDisciplines.length > 0) {
@@ -290,26 +292,27 @@ const IndexPage = ({}) => {
         params.append('descriptorName', nameArray.join());
       }
 
-      if (input.length > 0) {
-        let nameResults = profilesToFilter.filter((profile) => {
-          return profile.name.toLowerCase().includes(input.toLowerCase());
-        })
-        setResults(nameResults)
-        setTotalLength(nameResults.length)
-      } else {
-        setResults(profilesToFilter)
-        setTotalLength(profilesToFilter.length)
-      }
+      // if (input.length > 0) {
+      //   let nameResults = profilesToFilter.filter((profile) => {
+      //     return profile.name.toLowerCase().includes(input.toLowerCase());
+      //   })
+      //   setResults(nameResults)
+      //   setTotalLength(nameResults.length)
+      // } else {
+      //   setResults(profilesToFilter)
+      //   setTotalLength(profilesToFilter.length)
+      // }
 
       if ((selectedDisciplines.length > 0) || (selectedDescriptors.length > 0)) {
         router.push(`?${params.toString().replaceAll("%2C", ",")}&`);
       }
-
+      sendSearch(true)
     }, [selectedDisciplines, selectedDescriptors, input])
   
-    const handleInputChange = e => {
-      setInput(e.target.value)
-    }
+    const handleSearch = useDebouncedCallback((e) => {
+      console.log(e)
+        setInput(e)
+      }, 300)
   
     const handleDisciplinesChange = (discipline) => {
       const updatedCheckedDisciplinesState = disciplines.map(
@@ -366,9 +369,6 @@ const IndexPage = ({}) => {
     const handleClearDisciplines = () => {
       setSelectedDisciplines([])
       toggleDisciplines()
-      // setCheckedDisciplinesState(
-      //   new Array(disciplines.length).fill({status: false, discipline: ""})
-      // )
     }
 
     const handleClearInput = () => {
@@ -421,9 +421,6 @@ const IndexPage = ({}) => {
     const handleClearDescriptors = () => {
       setSelectedDescriptors([])
       toggleDescriptors()
-      // setCheckedDescriptorsState(
-      //   new Array(descriptors.length).fill({status: false, descriptor: ""})
-      // )
     }
   
     function fdisciplines() {
@@ -917,20 +914,24 @@ const IndexPage = ({}) => {
       ;<span></span>
       }
     }
+
+    function fetchData() {
+      sendSearch();
+    }
   
     const profileGrid = (results.length > 0) ? (
-      // <InfiniteScroll
-      //     dataLength={results.length} //This is important field to render the next data
-      //     next={fetchData}
-      //     hasMore={hasMore}
-      //     loader={<div style={{ textAlign: 'center' }}><h4>Loading...</h4></div>}
-      //     endMessage={
-      //       <p style={{ textAlign: 'center' }}>
-      //         <b></b>
-      //       </p>
-      //     }
-      //   >
-      <div>
+      <InfiniteScroll
+          dataLength={results.length} //This is important field to render the next data
+          next={fetchData}
+          hasMore={hasMore}
+          loader={<div style={{ textAlign: 'center' }}><h4>Loading...</h4></div>}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b></b>
+            </p>
+          }
+        >
+        <div>
           {
           isDirectory ? 
           (<div className="py-10 grid grid-cols-1 gap-6 grid-cols-2">{
@@ -943,6 +944,7 @@ const IndexPage = ({}) => {
           ))}</div>)
         }
         </div>
+      </InfiniteScroll>
     ) : (
       <div className="container">
       {isLoading ? (<div className="mt-10 p-10 bg-white rounded-3xl font-fira border-black border-2 shadow-md">
@@ -997,7 +999,7 @@ const IndexPage = ({}) => {
       )
 
   return (
-    <Suspense>
+    <div>
       <Headings
         title={"Member Profiles"}
         description={"Learn about our members, hire talent, find collaborators, and more."}
@@ -1023,8 +1025,10 @@ const IndexPage = ({}) => {
                 <input
                   className=" rounded-full px-3 text-sm border-2 border-black mt-2 p-1 w-64"
                   placeholder="Enter 'Name'"
-                  value={input}
-                  onChange={handleInputChange}
+                  // value={input}
+                  onChange={(e) => {
+                    handleSearch(e.target.value);
+                  }}
                 />
                 {/* <button onClick={handleSearchPress} className="ml-2 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2">
                   Search
@@ -1098,7 +1102,7 @@ const IndexPage = ({}) => {
           {profileGrid}
         </div>
       </main>
-    </Suspense>
+    </div>
   )
 }
 
