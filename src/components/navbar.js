@@ -6,7 +6,6 @@ import Image from "next/image"
 const Navbar = () => {
   return (
     <header className="hidden md:block relative w-full md:fixed text-black md:w-52 md:h-full shadow-2xl border-r-2 border-black">
-      <Script src="https://cdn.userway.org/widget.js" data-account="FDvSmHKPEz" />
       <Script src="https://cloud.umami.is/script.js" data-website-id="562fb85b-caee-4700-9868-77709667cac0" />
       <nav className="flex flex-col items-baseline justify-between">
         <Link href="/" className="text-xl font-bold p-5 hover:opacity-50">
