@@ -221,7 +221,12 @@ const IndexPage = ({}) => {
             return item;
           }
         )
-        setSelectedWorkSampleDisciplines3(updatedWorkSampleDisciplinesState)
+        const disciplinesFilters = workSampleDisciplines.filter((input) => {
+          if (input.status[2] == true) {
+            return input;
+          }
+        })
+        setSelectedWorkSampleDisciplines3(disciplinesFilters)
       }
       setWorkSampleDisciplines(updatedWorkSampleDisciplinesState)
     }
@@ -362,7 +367,7 @@ const IndexPage = ({}) => {
       })
       return (
         <div className="border-2 border-black rounded-2xl max-h-96 overflow-scroll bg-white">
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[2] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -391,16 +396,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, !visible[2], false, false, false])
               }
             >
               {visible[2] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[4] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -429,16 +434,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, false, !visible[4], false])
               }
             >
               {visible[4] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[0] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -467,16 +472,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([!visible[0], false, false, false, false, false])
               }
             >
               {visible[0] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[3] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -505,16 +510,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, !visible[3], false, false])
               }
             >
               {visible[3] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md">
+          <div className="relative m-5 pb-5 border-b-2 border-black">
             <div
               className={
                 visible[5] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -543,16 +548,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, false, false, !visible[5]])
               }
             >
               {visible[5] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 border-black max-w-md">
+          <div className="relative m-5 border-black">
             <div
               className={
                 visible[1] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -581,20 +586,20 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, !visible[1], false, false, false, false])
               }
             >
               {visible[1] ? "See less" : "See more"}
-            </button>
-          </div>
-          <div className="flex border-t-2 border-black p-5 justify-between items-center">
-            <a href="#" onClick={handleClearDisciplines}>
-              Clear All
             </a>
           </div>
+          {/* <div className="flex border-t-2 border-black p-5 justify-between items-center">
+            <a className="cursor-pointer" onClick={handleClearDisciplines}>
+              Clear All
+            </a>
+          </div> */}
         </div>
       )
     }
@@ -632,7 +637,7 @@ const IndexPage = ({}) => {
       })
       return (
         <div className="border-2 border-black rounded-2xl max-h-96 overflow-scroll bg-white">
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[2] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -661,16 +666,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, !visible[2], false, false, false])
               }
             >
               {visible[2] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[4] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -699,16 +704,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, false, !visible[4], false])
               }
             >
               {visible[4] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[0] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -737,16 +742,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([!visible[0], false, false, false, false, false])
               }
             >
               {visible[0] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 visible[3] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -775,16 +780,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, !visible[3], false, false])
               }
             >
               {visible[3] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md">
+          <div className="relative m-5 pb-5 border-b-2 border-black">
             <div
               className={
                 visible[5] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -813,16 +818,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, false, false, false, false, !visible[5]])
               }
             >
               {visible[5] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="relative m-5 border-black max-w-md">
+          <div className="relative m-5 border-black">
             <div
               className={
                 visible[1] ? "overflow-none" : "overflow-hidden max-h-24"
@@ -851,20 +856,20 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setVisible([false, !visible[1], false, false, false, false])
               }
             >
               {visible[1] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="flex border-t-2 border-black p-5 justify-between items-center">
-            <a href="#" onClick={handleClearDisciplines}>
+          {/* <div className="flex border-t-2 border-black p-5 justify-between items-center">
+            <a className="cursor-pointer" onClick={handleClearDisciplines}>
               Clear All
             </a>
-          </div>
+          </div> */}
         </div>
       )
     }
@@ -902,7 +907,7 @@ const IndexPage = ({}) => {
       })
       return (
         <div className="border-2 border-black rounded-2xl max-h-96 overflow-scroll bg-white">
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 descriptorVisible[0]
@@ -933,16 +938,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setDescriptorVisible([!descriptorVisible[0], false, false, false])
               }
             >
               {descriptorVisible[0] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 descriptorVisible[1]
@@ -973,16 +978,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setDescriptorVisible([false, !descriptorVisible[1], false, false])
               }
             >
               {descriptorVisible[1] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 pb-5 border-b-2 border-black max-w-md	">
+          <div className="relative m-5 pb-5 border-b-2 border-black	">
             <div
               className={
                 descriptorVisible[2]
@@ -1013,16 +1018,16 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setDescriptorVisible([false, false, !descriptorVisible[2], false])
               }
             >
               {descriptorVisible[2] ? "See less" : "See more"}
-            </button>
+            </a>
           </div>
-          <div className="relative m-5 border-black max-w-md	">
+          <div className="relative m-5 border-black	">
             <div
               className={
                 descriptorVisible[3]
@@ -1053,20 +1058,20 @@ const IndexPage = ({}) => {
                 })}
               </div>
             </div>
-            <button
-              className="text-sm font-bold mt-3"
+            {/* <a
+              className="text-sm font-bold mt-3 cursor-pointer"
               onClick={() =>
                 setDescriptorVisible([false, false, false, !descriptorVisible[3]])
               }
             >
               {descriptorVisible[3] ? "See less" : "See more"}
-            </button>
+            </a> */}
           </div>
-          <div className="flex border-t-2 border-black p-5 justify-between items-center">
-            <a href="#" onClick={handleClearDescriptors}>
+          {/* <div className="flex border-t-2 border-black p-5 justify-between items-center">
+            <a className="cursor-pointer" onClick={handleClearDescriptors}>
               Clear All
             </a>
-          </div>
+          </div> */}
         </div>
       )
     }
@@ -1365,6 +1370,7 @@ const images = Array.from(event.target.files)
                   type="file"
                   name="profilePicture"
                   id="profilePicture"
+                  accept="image/*"
                   onChange={(event) => handleChangeImage(event)}
                   className="bg-gray-200 rounded-lg p-2 w-1/2"
                 />
@@ -1476,6 +1482,7 @@ const images = Array.from(event.target.files)
                   What should people know about you? Share a brief bio. * (Character limit: 1,000)
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="bio"
                   name="bio"
                   id="bio"
@@ -1488,6 +1495,7 @@ const images = Array.from(event.target.files)
                   Tell us about your work process, your unique skills, and the types of environments you thrive in. * (Character limit: 1,000)
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="workStyleBio"
                   name="workStyleBio"
                   id="workStyleBio"
@@ -1500,6 +1508,7 @@ const images = Array.from(event.target.files)
                   What gigs, jobs, or opportunities are you actively pursuing right now? * (Character limit: 1,000)
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="pastWork"
                   name="pastWork"
                   id="pastWork"
@@ -1512,6 +1521,7 @@ const images = Array.from(event.target.files)
                   Demonstrate your track record with co-creation by listing key projects, people, and organizations you’ve worked with. * (Character limit: 1,000)
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="gigsSeeking"
                   name="gigsSeeking"
                   id="gigsSeeking"
@@ -1536,7 +1546,7 @@ const images = Array.from(event.target.files)
                       key={index}
                     >
                       <a onClick={() => handleClearSpecificDiscipline(discipline)}>
-                        <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                        <Image alt="close icon" width={50} height={50} className="w-4 h-4 cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
                     </span>
@@ -1562,7 +1572,7 @@ const images = Array.from(event.target.files)
                 key={index}
               >
                 <a href="#" onClick={() => handleClearSpecificDescriptor(descriptor)}>
-                  <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                  <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                 </a>
                 <span className="pl-1">{descriptor.name}</span>
               </span>
@@ -1607,6 +1617,7 @@ const images = Array.from(event.target.files)
                   Brief Description
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="workSamples"
                   name="workSamples1Description"
                   id="workSamples1Description"
@@ -1617,7 +1628,7 @@ const images = Array.from(event.target.files)
                   Work Sample Images
                 </label>
                 <label htmlFor="workSamples1Files" className="mb-2">Select up to 3 files:</label>
-                <input type="file" id="workSampleImages" name="workSamples1Files" onChange={(event) => {inputWorkSampleImages(event, 1)}} multiple></input>
+                <input type="file" accept="image/*" id="workSampleImages" name="workSamples1Files" onChange={(event) => {inputWorkSampleImages(event, 1)}} multiple></input>
                 {workSampleImages.map((file, index) => (
                   <div className="bg-gray-100 mt-5 p-5 rounded-3xl" key={index}>
                     {!!file && <Image width={200} height={200} src={file} alt="Uploaded preview" className="py-5" objectFit="contain" />}
@@ -1652,7 +1663,7 @@ const images = Array.from(event.target.files)
                       key={index}
                     >
                       <a onClick={() => handleClearSpecificDiscipline(discipline)}>
-                        <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                        <Image alt="close icon" width={50} height={50} className="w-4 h-4 cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
                     </span>
@@ -1692,6 +1703,7 @@ const images = Array.from(event.target.files)
                   Brief Description
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="workSamples"
                   name="workSamples2Description"
                   id="workSamples2Description"
@@ -1702,7 +1714,7 @@ const images = Array.from(event.target.files)
                   Work Sample Images
                 </label>
                 <label htmlFor="workSamples2Files" className="mb-2">Select up to 3 files:</label>
-                <input type="file" id="workSampleImages" name="workSamples2Files" onChange={(event) => {inputWorkSampleImages(event, 2)}} multiple></input>
+                <input type="file" accept="image/*" id="workSampleImages" name="workSamples2Files" onChange={(event) => {inputWorkSampleImages(event, 2)}} multiple></input>
                 {workSampleImages2.map((file, index) => (
                   <div className="bg-gray-100 mt-5 p-5 rounded-3xl" key={index}>
                     {!!file && <Image width={200} height={200} src={file} alt="Uploaded preview" className="py-5" objectFit="contain" />}
@@ -1737,7 +1749,7 @@ const images = Array.from(event.target.files)
                       key={index}
                     >
                       <a onClick={() => handleClearSpecificDiscipline(discipline)}>
-                        <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                        <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
                     </span>
@@ -1777,6 +1789,7 @@ const images = Array.from(event.target.files)
                   Brief Description
                 </label>
                 <textarea
+                  maxLength="1000"
                   type="workSamples"
                   name="workSamples3Description"
                   id="workSamples3Description"
@@ -1787,7 +1800,7 @@ const images = Array.from(event.target.files)
                   Work Sample Images
                 </label>
                 <label htmlFor="workSamples3Files" className="mb-2">Select up to 3 files:</label>
-                <input type="file" id="workSampleImages" name="workSamples3Files" onChange={(event) => {inputWorkSampleImages(event, 3)}} multiple></input>
+                <input type="file" accept="image/*" id="workSampleImages" name="workSamples3Files" onChange={(event) => {inputWorkSampleImages(event, 3)}} multiple></input>
                 {workSampleImages3.map((file, index) => (
                   <div className="bg-gray-100 mt-5 p-5 rounded-3xl" key={index}>
                     {!!file && <Image width={200} height={200} src={file} alt="Uploaded preview" className="py-5" objectFit="contain" />}
@@ -1822,7 +1835,7 @@ const images = Array.from(event.target.files)
                       key={index}
                     >
                       <a onClick={() => handleClearSpecificDiscipline(discipline)}>
-                        <Image alt="close icon" width={50} height={50} className="w-4 h-4" objectFit="contain" src="/images/close.png" />
+                        <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
                     </span>
