@@ -285,6 +285,51 @@ const IndexPage = ({}) => {
     const handleClearInput = () => {
       setInput("")
     }
+
+    const handleClearSpecificWorkSampleDiscipline = (clearDiscipline, workSampleNumber) => {
+      let updatedWorkSampleDisciplinesState = []
+      if (workSampleNumber == 1) {
+        let newSelectedDisciplines = selectedWorkSampleDisciplines.filter(function(discipline) { 
+            return discipline !== clearDiscipline
+        })
+        updatedWorkSampleDisciplinesState = workSampleDisciplines.map(
+          (item) => {
+            if (item.slug == clearDiscipline.slug) {
+              item.status[0] = !item.status[0];
+            }
+            return item;
+          }
+        )
+        setSelectedWorkSampleDisciplines(newSelectedDisciplines);
+      } else if (workSampleNumber == 2) {
+        let newSelectedDisciplines = selectedWorkSampleDisciplines2.filter(function(discipline) { 
+            return discipline !== clearDiscipline
+        })
+        updatedWorkSampleDisciplinesState = workSampleDisciplines.map(
+          (item) => {
+            if (item.slug == clearDiscipline.slug) {
+              item.status[1] = !item.status[1];
+            }
+            return item;
+          }
+        )
+        setSelectedWorkSampleDisciplines2(newSelectedDisciplines);
+      } else if (workSampleNumber == 3) {
+        let newSelectedDisciplines = selectedWorkSampleDisciplines3.filter(function(discipline) { 
+            return discipline !== clearDiscipline
+        })
+        updatedWorkSampleDisciplinesState = workSampleDisciplines.map(
+          (item) => {
+            if (item.slug == clearDiscipline.slug) {
+              item.status[2] = !item.status[2];
+            }
+            return item;
+          }
+        )
+        setSelectedWorkSampleDisciplines3(newSelectedDisciplines);
+      }
+      setWorkSampleDisciplines(updatedWorkSampleDisciplinesState)
+    }
   
     const handleClearSpecificDiscipline = (clearDiscipline) => {
       let newSelectedDisciplines = selectedDisciplines.filter(function(discipline) { 
@@ -1124,7 +1169,6 @@ const IndexPage = ({}) => {
       e.preventDefault()
     try {
       const formData = new FormData(e.target)
-      console.log(!!formData.get("availableForWork"))
       const profile = {
         "name": formData.get("name"),
         "email": formData.get("email"),
@@ -1165,40 +1209,54 @@ const IndexPage = ({}) => {
       
 
       // // work sample upload
-      const workSample1FilesFormData = new FormData();
-      console.log(formData.getAll("workSamples1Files"))
-      const activeWorkSamples1 = formData.getAll("workSamples1Files").filter((file) => {
-        if (file.size != 0) {
-          workSample1FilesFormData.append("files", file)
-          return file;
-        }
-      })
-      console.log(activeWorkSamples1)
-      if (activeWorkSamples1.length > 0) {
-        workSample1FilesFormData.set("ref", "api::profile.profile")
-        workSample1FilesFormData.set("field", "workSamples[0].images")
-        for (let i = 0; i < activeWorkSamples1.length; i++) {
-          workSample1FilesFormData.append(`fileInfo`, JSON.stringify({caption: formData.get(`workSamples1FilesCaption${i}`), alternativeText: formData.get(`workSamples1FilesAltText${i}`)}))
-        }
-        const workSample1FilesResponse = await fetch('https://sixty-backend-new.onrender.com/api/upload', {
-          method: 'post',
-          body: workSample1FilesFormData
-        });
-        const workSample1FilesData = await workSample1FilesResponse.json()
-        const workSample1Ids = workSample1FilesData.map(fileData => {
-          return fileData.id;
-        })
-        profile.workSamples.push({
+      if (formData.get("workSamples1Name").length > 0) {
+        const workSample1FilesFormData = new FormData();
+
+        let workSample1 = {
           name: formData.get("workSamples1Name"), 
           link: formData.get("workSamples1Link"), 
           description: formData.get("workSamples1Description"), 
-          images: workSample1Ids,
           work_sample_disciplines: {set: selectedWorkSampleDisciplines}
+        }
+
+        const activeWorkSamples1 = formData.getAll("workSamples1Files").filter((file) => {
+          if (file.size != 0) {
+            workSample1FilesFormData.append("files", file)
+            return file;
+          }
         })
+
+
+        if (activeWorkSamples1.length > 0) {
+          workSample1FilesFormData.set("ref", "api::profile.profile")
+          workSample1FilesFormData.set("field", "workSamples[0].images")
+          for (let i = 0; i < activeWorkSamples1.length; i++) {
+            workSample1FilesFormData.append(`fileInfo`, JSON.stringify({caption: formData.get(`workSamples1FilesCaption${i}`), alternativeText: formData.get(`workSamples1FilesAltText${i}`)}))
+          }
+          const workSample1FilesResponse = await fetch('https://sixty-backend-new.onrender.com/api/upload', {
+            method: 'post',
+            body: workSample1FilesFormData
+          });
+          const workSample1FilesData = await workSample1FilesResponse.json()
+          const workSample1Ids = workSample1FilesData.map(fileData => {
+            return fileData.id;
+          })
+          workSample1.images = workSample1Ids;
+        }
+        profile.workSamples.push(workSample1)
       }
       
       // // work sample upload
-      const workSample2FilesFormData = new FormData();
+      if (formData.get("workSamples2Name").length > 0) {
+        const workSample2FilesFormData = new FormData();
+
+        let workSample2 = {
+          name: formData.get("workSamples2Name"), 
+          link: formData.get("workSamples2Link"), 
+          description: formData.get("workSamples2Description"), 
+          work_sample_disciplines: {set: selectedWorkSampleDisciplines2}
+        }
+
       const activeWorkSamples2 = formData.getAll("workSamples2Files").filter((file) => {
         if (file.size != 0) {
           workSample2FilesFormData.append("files", file)
@@ -1220,17 +1278,22 @@ const IndexPage = ({}) => {
         const workSample2Ids = workSample2FilesData.map(fileData => {
           return fileData.id;
         })
-        profile.workSamples.push({
-          name: formData.get("workSamples2Name"), 
-          link: formData.get("workSamples2Link"), 
-          description: formData.get("workSamples2Description"), 
-          images: workSample2Ids,
-          work_sample_disciplines: {set: selectedWorkSampleDisciplines2}
-        })
+        workSample2.images = workSample2Ids;
+      }
+      profile.workSamples.push(workSample2)
       }
 
       // // work sample upload
-      const workSample3FilesFormData = new FormData();
+      if (formData.get("workSamples3Name").length > 0) {
+        const workSample3FilesFormData = new FormData();
+
+        let workSample3 = {
+          name: formData.get("workSamples3Name"), 
+          link: formData.get("workSamples3Link"), 
+          description: formData.get("workSamples3Description"), 
+          work_sample_disciplines: {set: selectedWorkSampleDisciplines3}
+        }
+
       const activeWorkSamples3 = formData.getAll("workSamples3Files").filter((file) => {
         if (file.size != 0) {
           workSample3FilesFormData.append("files", file)
@@ -1244,23 +1307,17 @@ const IndexPage = ({}) => {
         for (let i = 0; i < activeWorkSamples3.length; i++) {
           workSample3FilesFormData.append(`fileInfo`, JSON.stringify({caption: formData.get(`workSamples3FilesCaption${i}`), alternativeText: formData.get(`workSamples3FilesAltText${i}`)}))
         }
-        console.log(workSample3FilesFormData)
         const workSample3FilesResponse = await fetch('https://sixty-backend-new.onrender.com/api/upload', {
           method: 'post',
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(workSample3FilesFormData)
+          body: workSample3FilesFormData
         });
         const workSample3FilesData = await workSample3FilesResponse.json()
         const workSample3Ids = workSample3FilesData.map(fileData => {
           return fileData.id;
         })
-        profile.workSamples.push({
-          name: formData.get("workSamples3Name"), 
-          link: formData.get("workSamples3Link"), 
-          description: formData.get("workSamples3Description"), 
-          images: workSample3Ids,
-          work_sample_disciplines: {set: selectedWorkSampleDisciplines3}
-        })
+        workSample3.images = workSample3Ids;
+        }
+        profile.workSamples.push(workSample3)
       }
       
     const response = await fetch('https://sixty-backend-new.onrender.com/api/profiles?status=draft', {
@@ -1269,11 +1326,11 @@ const IndexPage = ({}) => {
       body: JSON.stringify({data: profile}),
     })
       return response;
-  } catch (error) {
-    console.error("Error", error.message)
-  } finally {
-    setFormSubmitted(true)
-  }
+    } catch (error) {
+      console.error("Error", error.message)
+    } finally {
+      setFormSubmitted(true)
+    }
   }
 
   const inputWorkSampleImages = (event, workSampleNumber) => {
@@ -1571,7 +1628,7 @@ const images = Array.from(event.target.files)
               className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border"
                 key={index}
               >
-                <a href="#" onClick={() => handleClearSpecificDescriptor(descriptor)}>
+                <a onClick={() => handleClearSpecificDescriptor(descriptor)}>
                   <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                 </a>
                 <span className="pl-1">{descriptor.name}</span>
@@ -1662,7 +1719,7 @@ const images = Array.from(event.target.files)
                     className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border"
                       key={index}
                     >
-                      <a onClick={() => handleClearSpecificDiscipline(discipline)}>
+                      <a onClick={() => handleClearSpecificWorkSampleDiscipline(discipline, 1)}>
                         <Image alt="close icon" width={50} height={50} className="w-4 h-4 cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
@@ -1748,7 +1805,7 @@ const images = Array.from(event.target.files)
                     className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border"
                       key={index}
                     >
-                      <a onClick={() => handleClearSpecificDiscipline(discipline)}>
+                      <a onClick={() => handleClearSpecificWorkSampleDiscipline(discipline, 2)}>
                         <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
@@ -1834,7 +1891,7 @@ const images = Array.from(event.target.files)
                     className="text-xs mr-2 rounded-full px-1 bg-white inline-flex font-fira border-black border"
                       key={index}
                     >
-                      <a onClick={() => handleClearSpecificDiscipline(discipline)}>
+                      <a onClick={() => handleClearSpecificWorkSampleDiscipline(discipline, 3)}>
                         <Image alt="close icon" width={50} height={50} className="w-4 h-4  cursor-pointer" objectFit="contain" src="/images/close.png" />
                       </a>
                       <span className="pl-1">{discipline.name}</span>
@@ -1849,7 +1906,7 @@ const images = Array.from(event.target.files)
               </div>
               </fieldset>
                 <input
-                  className="ml-10 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2"
+                  className="ml-10 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2 cursor-pointer"
                   type="submit"
                   defaultValue="Submit"
                 />
