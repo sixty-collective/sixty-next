@@ -16,6 +16,7 @@ const IndexPage = ({}) => {
     const [page, setPage] = useState(1);
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(true);
+    const [isSending, setIsSending] = useState(false);
     const [isDirectory, setIsDirectory] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [initial, setInitial] = useState(true)
@@ -1167,6 +1168,7 @@ const IndexPage = ({}) => {
 
     async function onSubmit(e) {
       e.preventDefault()
+      setIsSending(true)
     try {
       const formData = new FormData(e.target)
       const profile = {
@@ -1329,6 +1331,7 @@ const IndexPage = ({}) => {
     } catch (error) {
       console.error("Error", error.message)
     } finally {
+      setIsSending(false)
       setFormSubmitted(true)
     }
   }
@@ -1908,7 +1911,7 @@ const images = Array.from(event.target.files)
                 <input
                   className="ml-10 rounded-full px-3 text-sm bg-black text-white p-1 border-black border-2 cursor-pointer"
                   type="submit"
-                  defaultValue="Submit"
+                  defaultValue={isSending ? "Submitting..." : "Submit"}
                 />
       </form>
     }
